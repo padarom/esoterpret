@@ -14,17 +14,8 @@ import sys, re
 # TUBE LINE & STATION DATA
 # Taken from https://gist.github.com/paulcuth/1111303
 LINES = {
-	'B': 'Bakerloo',
-	'C': 'Central',
-	'D': 'District',
-	'H': 'Hammersmith',
-	'I': 'Circle',
-	'J': 'Jubilee',
-	'M': 'Metropolitan',
-	'N': 'Northern',
-	'P': 'Piccadilly',
-	'V': 'Victoria',
-	'W': 'Waterloo & City'
+	'B': 'Bakerloo', 'C': 'Central', 'D': 'District', 'H': 'Hammersmith', 'I': 'Circle', 'J': 'Jubilee', 
+	'M': 'Metropolitan', 'N': 'Northern', 'P': 'Piccadilly', 'V': 'Victoria', 'W': 'Waterloo & City'
 }
 
 STATIONS = {
@@ -290,19 +281,6 @@ STATIONS = {
 	"WDL": "Wood Lane"	
 }
 
-STATIONS_ON_LINE = {
-	'B': ['BST', 'CHX', 'ERB', 'ELE', 'EMB', 'HSD', 'HAW', 'KGN', 'KNT', 'KPK', 'LAM', 'MDV', 'MYB', 'NWM', 'OXC', 'PAD', 'PIC', 'QPK', 'RPK', 'SKT', 'SPK', 'WAR', 'WLO', 'WEM', 'WJN'],
-	'C': ['BNK', 'BDE', 'BNG', 'BDS', 'BHL', 'CYL', 'CHG', 'DEB', 'EBY', 'EAC', 'EPP', 'FLP', 'GHL', 'GRH', 'GFD', 'HAI', 'HLN', 'HOL', 'HPK', 'LAN', 'LEY', 'LYS', 'LST', 'LTN', 'MAR', 'MLE', 'NEP', 'NAC', 'NHT', 'NHG', 'OXC', 'PER', 'QWY', 'RED', 'ROD', 'RUG', 'SBC', 'SNB', 'SRP', 'SWF', 'STP', 'SFD', 'THB', 'TCR', 'WAN', 'WAC', 'WRP', 'WCT', 'WFD'],
-	'D': ['ACT', 'ALE', 'BKG', 'BCT', 'BEC', 'BLF', 'BWR', 'BBB', 'CST', 'CHP', 'DGE', 'DGH', 'EBY', 'ECM', 'ECT', 'EHM', 'EPY', 'ERD', 'EPK', 'EMB', 'FBY', 'GRD', 'GUN', 'HMD', 'HST', 'HCH', 'OLY', 'KEW', 'MAN', 'MLE', 'MON', 'OLY', 'PGR', 'PLW', 'PUT', 'RCP', 'RMD', 'SSQ', 'SKN', 'SFS', 'SJP', 'STB', 'STG', 'TEM', 'THL', 'TGR', 'UPM', 'UPB', 'UPY', 'UPK', 'VIC', 'WBT', 'WHM', 'WKN', 'WMS', 'WCL', 'WDN', 'WMP'],
-	'H': ['ALD', 'ALE', 'BST', 'BAR', 'BKG', 'BLF', 'BWR', 'BBB', 'CST', 'EHM', 'ERD', 'EMB', 'ESQ', 'FAR', 'GRD', 'GPS', 'HMS', 'HST', 'KXX', 'LST', 'MAN', 'MLE', 'MON', 'MGT', 'PAD', 'PLW', 'SSQ', 'SKN', 'SJP', 'STG', 'TEM', 'THL', 'UPK', 'VIC', 'WHM', 'WMS', 'WCL', 'WDL'],
-	'J': ['BST', 'BER', 'BDS', 'CWR', 'CWF', 'CNT', 'CPK', 'DHL', 'FRD', 'GPK', 'KIL', 'KBY', 'LON', 'NEA', 'NGW', 'QBY', 'SWK', 'SJW', 'STA', 'SFD', 'SWC', 'WLO', 'WPK', 'WHM', 'WHD', 'WMS', 'WLG'],
-	'M': ['ALD', 'AME', 'BST', 'BAR', 'CLF', 'CWD', 'CLW', 'CRX', 'ETE', 'ESQ', 'FAR', 'FRD', 'GPS', 'HOH', 'HDN', 'ICK', 'KXX', 'LST', 'MPK', 'MGT', 'NHR', 'NWP', 'NWD', 'NWH', 'PIN', 'RLN', 'RKY', 'RUI', 'RUM', 'UXB', 'WAT', 'WPK', 'WHR'], 
-	'N': ['ANG', 'ARC', 'BAL', 'BNK', 'BPK', 'BOR', 'BTX', 'BUR', 'CTN', 'CHF', 'CHX', 'CPC', 'CPN', 'CPS', 'COL', 'CLW', 'EFY', 'EDG', 'ELE', 'EMB', 'EUS', 'FYC', 'GGR', 'GST', 'HMP', 'HND', 'HBT', 'HIG', 'KEN', 'KTN', 'KXX', 'LSQ', 'LON', 'MHE', 'MGT', 'MOR', 'MCR', 'OLD', 'OVL', 'SWM', 'STK', 'TBE', 'TBY', 'TCR', 'TOT', 'TPK', 'WST', 'WLO', 'WFY', 'WSP'], 
-	'P': ['ACT', 'ALP', 'AGR', 'ARL', 'BCT', 'BOS', 'BGR', 'CRD', 'CFS', 'COV', 'ECM', 'ECT', 'ETE', 'FPK', 'GRD', 'GPK', 'HMD', 'HTX', 'HTF', 'HRV', 'HRC', 'HDN', 'HOL', 'HRD', 'HNC', 'HNE', 'HNW', 'HPC', 'ICK', 'KXX', 'KNB', 'LSQ', 'MNR', 'NEL', 'NFD', 'OAK', 'OST', 'PRY', 'PIC', 'RLN', 'RUI', 'RUM', 'RSQ', 'SEL', 'SHR', 'SKN', 'SGT', 'SHL', 'STN', 'TGR', 'TPL', 'UXB', 'WGN'],
-	'V': ['BHR', 'BRX', 'EUS', 'FPK', 'GPK', 'HBY', 'KXX', 'OXC', 'PIM', 'SVS', 'STK', 'TTH', 'VUX', 'VIC', 'WAL', 'WST'],
-	'W': ['BNK', 'WLO']
-}
-
 LINES_AT_STATION = {	
 	"BST": ["B", "H", "J", "M"],
 	"CHX": ["B", "N"],
@@ -566,11 +544,8 @@ LINES_AT_STATION = {
 	"WDL": ["I", "H", "D"]
 }
 
-# Initialize Station Values to their names
-#for station in STATIONS:
-#	StationValues[station] = STATIONS[station]
-
 def getLineAbbreviation(line):
+	"""Returns the abbreviation of a specified line, or None if it doesn't exist"""
 	for abbreviation, name in LINES.items():
 		if name == line:
 			return abbreviation
@@ -578,6 +553,7 @@ def getLineAbbreviation(line):
 	return None
 
 def getStationAbbreviation(station):
+	"""Returns the abbreviation of a specified station, or None if it doesn't exist"""
 	for abbreviation, name in STATIONS.items():
 		if name == station:
 			return abbreviation
@@ -586,7 +562,7 @@ def getStationAbbreviation(station):
 
 class Interpreter:
 	"""
-	Mornington Crescent "compiler" and interpreter.
+	Mornington Crescent Interpreter
 	"""
 
 	# Environment
@@ -620,9 +596,7 @@ class Interpreter:
 			self.move()
 
 	def move(self):
-		"""
-		Execute the next instruction
-		"""
+		"""Execute the next instruction as specified by _InstructionPointer"""
 
 		code    = self.Code[self._InstructionPointer]
 		pattern = re.compile("^Take (.*) Line to (.*)$")
@@ -676,6 +650,12 @@ class Interpreter:
 		return True
 
 	def executeStation(self, station):
+		"""
+		Executes the destination station's instruction
+
+		Arguments:
+			station -- The destination station
+		"""
 		before = self.DataPointer
 		self.DataPointer = station
 		abbreviation = getStationAbbreviation(station)
@@ -683,9 +663,9 @@ class Interpreter:
 		action = None
 		performDefault = False
 
-		appendix = " - S" if self.hasSpecialMeaning(station) else ""
-		print "[" + str(self._InstructionPointer) + "] From " + before + " to " + station + appendix
-		print "Before: " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")"
+		# Debug
+		# print "[" + str(self._InstructionPointer) + "] From " + before + " to " + station + appendix
+		# print "Before: " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")"
 
 		# add
 		if station == "Upminster":
@@ -866,26 +846,13 @@ class Interpreter:
 		if performDefault:
 			self.swapValues(abbreviation)
 
-		print "After:  " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")"
-		print ""
+		# Debug
+		# print "After:  " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")"
+		# print ""
 
 	def swapValues(self, abbreviation):
+		"""Swaps the values of the Accumulator and the station with the specified abbreviation"""
 		self.Accumulator, self.StationValues[abbreviation] = self.StationValues[abbreviation], self.Accumulator
-
-	def hasSpecialMeaning(self, station):
-		"""
-		Return True if the station provided has a special meaning.
-		"""
-
-		return station in ["Upminster", "Chalfont & Latimer", "Cannon Street", 
-		                   "Preston Road", "Bounds Green", "Manor House", "Holland Park", 
-		                   "Turnham Green", "Stepney Green", "Russell Square", 
-		                   "Notting Hill Gate", "Parsons Green", "Seven Sisters", 
-		                   "Charing Cross", "Paddington", "Gunnersbury", "Mile End", 
-		                   "Upney", "Hounslow Central", "Turnpike Lane", "Bank", 
-		                   "Hammersmith", "Temple", "Angel", "Marble Arch", 
-		                   "Mornington Crescent"]
-
 
 if __name__ == "__main__":
 	import argparse
