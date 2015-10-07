@@ -10,557 +10,290 @@ More information: http://esolangs.org/wiki/Mornington_Crescent
 """
 
 import sys, re
+from collections import defaultdict
 
 # TUBE LINE & STATION DATA
 # Taken from https://gist.github.com/paulcuth/1111303
-LINES = {
-	'B': 'Bakerloo', 'C': 'Central', 'D': 'District', 'H': 'Hammersmith', 'I': 'Circle', 'J': 'Jubilee', 
-	'M': 'Metropolitan', 'N': 'Northern', 'P': 'Piccadilly', 'V': 'Victoria', 'W': 'Waterloo & City'
-}
+_StationString = """Acton Town [Piccadilly] [District]
+Aldgate [Metropolitan] [Circle]
+Aldgate East [Hammersmith & City] [District]
+Alperton [Piccadilly]
+Amersham [Metropolitan]
+Angel [Northern]
+Archway [Northern]
+Arnos Grove [Piccadilly]
+Arsenal [Piccadilly]
+Baker Street [Hammersmith & City] [Circle] [Metropolitan] [Bakerloo] [Jubilee]
+Balham [Northern]
+Bank [Central] [Waterloo & City] [Northern] [District] [Circle]
+Barbican [Hammersmith & City] [Circle] [Metropolitan]
+Barking [Hammersmith & City] [District]
+Barkingside [Central]
+Barons Court [Piccadilly] [District]
+Bayswater [Circle] [District]
+Becontree [District]
+Belsize Park [Northern]
+Bermondsey [Jubilee]
+Bethnal Green [Central]
+Blackfriars [Circle] [District]
+Blackhorse Road [Victoria]
+Bond Street [Jubilee] [Central]
+Borough [Northern]
+Boston Manor [Piccadilly]
+Bounds Green [Piccadilly]
+Bow Road [Hammersmith & City] [District]
+Brent Cross [Northern]
+Brixton [Victoria]
+Bromley-by-Bow [Hammersmith & City] [District]
+Buckhurst Hill [Central]
+Burnt Oak [Northern]
+Caledonian Road [Piccadilly]
+Camden Town [Northern]
+Canada Water [Jubilee]
+Canary Wharf [Jubilee]
+Canning Town [Jubilee]
+Cannon Street [Circle] [District]
+Canons Park [Jubilee]
+Chalfont & Latimer [Metropolitan]
+Chalk Farm [Northern]
+Chancery Lane [Central]
+Charing Cross [Bakerloo] [Northern]
+Chesham [Metropolitan]
+Chigwell [Central]
+Chiswick Park [District]
+Chorleywood [Metropolitan]
+Clapham Common [Northern]
+Clapham North [Northern]
+Clapham South [Northern]
+Cockfosters [Piccadilly]
+Colindale [Northern]
+Colliers Wood [Northern]
+Covent Garden [Piccadilly]
+Croxley [Metropolitan]
+Dagenham East [District]
+Dagenham Heathway [District]
+Debden [Central]
+Dollis Hill [Jubilee]
+Ealing Broadway [Central] [District]
+Ealing Common [Piccadilly] [District]
+Earl's Court [District] [Piccadilly]
+East Acton [Central]
+Eastcote [Metropolitan] [Piccadilly]
+East Finchley [Northern]
+East Ham [Hammersmith & City] [District]
+East Putney [District]
+Edgware [Northern]
+Edgware Road [Hammersmith & City] [Circle] [District]
+Edgware Road [Bakerloo]
+Elephant & Castle [Bakerloo] [Northern]
+Elm Park [District]
+Embankment [Northern] [Bakerloo] [Circle] [District]
+Epping [Central]
+Euston [Northern] [Victoria]
+Euston Square [Hammersmith & City] [Circle] [Metropolitan]
+Fairlop [Central]
+Farringdon [Hammersmith & City] [Circle] [Metropolitan]
+Finchley Central [Northern]
+Finchley Road [Metropolitan] [Jubilee]
+Finsbury Park [Piccadilly] [Victoria]
+Fulham Broadway [District]
+Gants Hill [Central]
+Gloucester Road [Piccadilly] [Circle] [District]
+Golders Green [Northern]
+Goldhawk Road [Hammersmith & City] [Circle]
+Goodge Street [Northern]
+Grange Hill [Central]
+Great Portland Street [Hammersmith & City] [Circle] [Metropolitan]
+Greenford [Central]
+Green Park [Jubilee] [Victoria] [Piccadilly]
+Gunnersbury [District]
+Hainault [Central]
+Hammersmith [Piccadilly] [District]
+Hammersmith [Hammersmith & City] [Circle]
+Hampstead [Northern]
+Hanger Lane [Central]
+Harlesden [Bakerloo]
+Harrow & Wealdstone [Bakerloo]
+Harrow-on-the-Hill [Metropolitan]
+Hatton Cross [Piccadilly]
+Heathrow Terminal 4 [Piccadilly]
+Heathrow Terminal 5 [Piccadilly]
+Heathrow Terminals 1, 2, 3 [Piccadilly]
+Hendon Central [Northern]
+High Barnet [Northern]
+Highbury & Islington [Victoria]
+Highgate [Northern]
+High Street Kensington [Circle] [District]
+Hillingdon [Metropolitan] [Piccadilly]
+Holborn [Piccadilly] [Central]
+Holland Park [Central]
+Holloway Road [Piccadilly]
+Hornchurch [District]
+Hounslow Central [Piccadilly]
+Hounslow East [Piccadilly]
+Hounslow West [Piccadilly]
+Hyde Park Corner [Piccadilly]
+Ickenham [Metropolitan] [Piccadilly]
+Kennington [Northern]
+Kensal Green [Bakerloo]
+Kensington [District]
+Kentish Town [Northern]
+Kenton [Bakerloo]
+Kew Gardens [District]
+Kilburn [Jubilee]
+Kilburn Park [Bakerloo]
+Kingsbury [Jubilee]
+King's Cross St. Pancras [Victoria] [Piccadilly] [Northern] [Circle] [Hammersmith & City] [Metropolitan]
+Knightsbridge [Piccadilly]
+Ladbroke Grove [Hammersmith & City] [Circle]
+Lambeth North [Bakerloo]
+Lancaster Gate [Central]
+Latimer Road [Hammersmith & City] [Circle]
+Leicester Square [Northern] [Piccadilly]
+Leyton [Central]
+Leytonstone [Central]
+Liverpool Street [Circle] [Hammersmith & City] [Metropolitan] [Central]
+London Bridge [Northern] [Jubilee]
+Loughton [Central]
+Maida Vale [Bakerloo]
+Manor House [Piccadilly]
+Mansion House [Circle] [District]
+Marble Arch [Central]
+Marylebone [Bakerloo]
+Mile End [Central] [Hammersmith & City] [District]
+Mill Hill East [Northern]
+Moorgate [Northern] [Hammersmith & City] [Circle] [Metropolitan]
+Moor Park [Metropolitan]
+Morden [Northern]
+Mornington Crescent [Northern]
+Neasden [Jubilee]
+Newbury Park [Central]
+North Acton [Central]
+North Ealing [Piccadilly]
+Northfields [Piccadilly]
+North Greenwich [Jubilee]
+North Harrow [Metropolitan]
+Northolt [Central]
+North Wembley [Bakerloo]
+Northwick Park [Metropolitan]
+Northwood [Metropolitan]
+Northwood Hills [Metropolitan]
+Notting Hill Gate [Circle] [District] [Central]
+Oakwood [Piccadilly]
+Old Street [Northern]
+Osterley [Piccadilly]
+Oval [Northern]
+Oxford Circus [Bakerloo] [Victoria] [Central]
+Paddington [Bakerloo] [Circle] [District]
+Paddington [Circle] [Hammersmith & City]
+Park Royal [Piccadilly]
+Parsons Green [District]
+Perivale [Central]
+Piccadilly Circus [Bakerloo] [Piccadilly]
+Pimlico [Victoria]
+Pinner [Metropolitan]
+Plaistow [Hammersmith & City] [District]
+Preston Road [Metropolitan]
+Putney Bridge [District]
+Queensbury [Jubilee]
+Queen's Park [Bakerloo]
+Queensway [Central]
+Ravenscourt Park [District]
+Rayners Lane [Metropolitan] [Piccadilly]
+Redbridge [Central]
+Regent's Park [Bakerloo]
+Richmond [District]
+Rickmansworth [Metropolitan]
+Roding Valley [Central]
+Royal Oak [Circle] [Hammersmith & City]
+Ruislip [Metropolitan] [Piccadilly]
+Ruislip Gardens [Central]
+Ruislip Manor [Metropolitan] [Piccadilly]
+Russell Square [Piccadilly]
+Seven Sisters [Victoria]
+Shepherd's Bush [Central]
+Shepherd's Bush Market [Circle] [Hammersmith & City]
+Sloane Square [Circle] [District]
+Snaresbrook [Central]
+South Ealing [Piccadilly]
+Southfields [District]
+Southgate [Piccadilly]
+South Harrow [Piccadilly]
+South Kensington [Piccadilly] [Circle] [District]
+South Kenton [Bakerloo]
+South Ruislip [Central]
+Southwark [Jubilee]
+South Wimbledon [Northern]
+South Woodford [Central]
+Stamford Brook [District]
+Stanmore [Jubilee]
+Stepney Green [Hammersmith & City] [District]
+St. James's Park [Circle] [District]
+St. John's Wood [Jubilee]
+Stockwell [Victoria] [Northern]
+Stonebridge Park [Bakerloo]
+St. Paul's [Central]
+Stratford [Central]  [Jubilee]
+Sudbury Hill [Piccadilly]
+Sudbury Town [Piccadilly]
+Swiss Cottage [Jubilee]
+Temple [Circle] [District]
+Theydon Bois [Central]
+Tooting Bec [Northern]
+Tooting Broadway [Northern]
+Tottenham Court Road [Northern] [Central]
+Tottenham Hale [Victoria]
+Totteridge & Whetstone [Northern]
+Tower Hill [Circle] [District]
+Tufnell Park [Northern]
+Turnham Green [District]
+Turnpike Lane [Piccadilly]
+Upminster [District]
+Upminster Bridge [District]
+Upney [District]
+Upton Park [Hammersmith & City] [District]
+Uxbridge [Metropolitan] [Piccadilly]
+Vauxhall [Victoria]
+Victoria [Victoria] [Circle] [District]
+Walthamstow Central [Victoria]
+Wanstead [Central]
+Warren Street [Northern] [Victoria]
+Warwick Avenue [Bakerloo]
+Waterloo [Bakerloo] [Northern] [Waterloo & City] [Jubilee]
+Watford [Metropolitan]
+Wembley Central [Bakerloo]
+Wembley Park [Metropolitan] [Jubilee]
+West Acton [Central]
+Westbourne Park [Circle] [Hammersmith & City]
+West Brompton [District]
+West Finchley [Northern]
+West Ham [Jubilee] [Hammersmith & City] [District]
+West Hampstead [Jubilee]
+West Harrow [Metropolitan]
+West Kensington [District]
+Westminster [Circle] [District] [Jubilee]
+West Ruislip [Central]
+Whitechapel [Hammersmith & City] [District]
+White City [Central]
+Willesden Green [Jubilee]
+Willesden Junction [Bakerloo]
+Wimbledon [District]
+Wimbledon Park [District]
+Woodford [Central]
+Wood Green [Piccadilly]
+Wood Lane [Circle] [Hammersmith & City]
+Woodside Park [Northern]"""
+_lines = _StationString.split("\n")
+_matches = map(lambda a: re.search("^([^\[\]]*?)\s*((\[[^\[\]]*\]\s*)*)$", a), _lines)
 
-STATIONS = {
-	"BST": "Baker Street",
-	"CHX": "Charing Cross",
-	"ERB": "Edgware Road (Bakerloo)",
-	"ELE": "Elephant and Castle",
-	"EMB": "Embankment",
-	"HSD": "Harlesden",
-	"HAW": "Harrow and Wealdstone",
-	"KGN": "Kensal Green",
-	"KNT": "Kenton",
-	"KPK": "Kilburn Park",
-	"LAM": "Lambeth North",
-	"MDV": "Maida Vale",
-	"MYB": "Marylebone",
-	"NWM": "North Wembley",
-	"OXC": "Oxford Circus",
-	"PAD": "Paddington",
-	"PIC": "Piccadilly Circus",
-	"QPK": "Queen's Park",
-	"RPK": "Regent's Park",
-	"SKT": "South Kenton",
-	"SPK": "Stonebridge Park",
-	"WAR": "Warwick Avenue",
-	"WLO": "Waterloo",
-	"WEM": "Wembley Central",
-	"WJN": "Willesden Junction",
-	"BNK": "Bank",
-	"BDE": "Barkingside",
-	"BNG": "Bethnal Green",
-	"BDS": "Bond Street",
-	"BHL": "Buckhurst Hill",
-	"CYL": "Chancery Lane",
-	"CHG": "Chigwell",
-	"DEB": "Debden",
-	"EBY": "Ealing Broadway",
-	"EAC": "East Acton",
-	"EPP": "Epping",
-	"FLP": "Fairlop",
-	"GHL": "Gants Hill",
-	"GRH": "Grange Hill",
-	"GFD": "Greenford",
-	"HAI": "Hainault",
-	"HLN": "Hanger Lane",
-	"HOL": "Holborn",
-	"HPK": "Holland Park",
-	"LAN": "Lancaster Gate",
-	"LEY": "Leyton",
-	"LYS": "Leytonstone",
-	"LST": "Liverpool Street",
-	"LTN": "Loughton",
-	"MAR": "Marble Arch",
-	"MLE": "Mile End",
-	"NEP": "Newbury Park",
-	"NAC": "North Acton",
-	"NHT": "Northolt",
-	"NHG": "Notting Hill Gate",
-	"PER": "Perivale",
-	"QWY": "Queensway",
-	"RED": "Redbridge",
-	"ROD": "Roding Valley",
-	"RUG": "Ruislip Gardens",
-	"SBC": "Shepherd's Bush",
-	"SNB": "Snaresbrook",
-	"SRP": "South Ruislip",
-	"SWF": "South Woodford",
-	"STP": "St Paul's",
-	"SFD": "Stratford",
-	"THB": "Theydon Bois",
-	"TCR": "Tottenham Court Road",
-	"WAN": "Wanstead",
-	"WAC": "West Acton",
-	"WRP": "West Ruislip",
-	"WCT": "White City",
-	"WFD": "Woodford",
-	"ACT": "Acton Town",
-	"ALE": "Aldgate East",
-	"BKG": "Barking",
-	"BCT": "Barons Court",
-	"BEC": "Becontree",
-	"BLF": "Blackfriars",
-	"BWR": "Bow Road",
-	"BBB": "Bromley-by-Bow",
-	"CST": "Cannon Street",
-	"CHP": "Chiswick Park",
-	"DGE": "Dagenham East",
-	"DGH": "Dagenham Heathway",
-	"ECM": "Ealing Common",
-	"ECT": "Earl's Court",
-	"EHM": "East Ham",
-	"EPY": "East Putney",
-	"ERD": "Edgware Road (H & C)",
-	"EPK": "Elm Park",
-	"FBY": "Fulham Broadway",
-	"GRD": "Gloucester Road",
-	"GUN": "Gunnersbury",
-	"HMD": "Hammersmith (District and Picc)",
-	"HST": "High Street Kensington",
-	"HCH": "Hornchurch",
-	"OLY": "Kensington (Olympia)",
-	"KEW": "Kew Gardens",
-	"MAN": "Mansion House",
-	"MON": "Monument",
-	"PGR": "Parsons Green",
-	"PLW": "Plaistow",
-	"PUT": "Putney Bridge",
-	"RCP": "Ravenscourt Park",
-	"RMD": "Richmond",
-	"SSQ": "Sloane Square",
-	"SKN": "South Kensington",
-	"SFS": "Southfields",
-	"SJP": "St. James's Park",
-	"STB": "Stamford Brook",
-	"STG": "Stepney Green",
-	"TEM": "Temple",
-	"THL": "Tower Hill",
-	"TGR": "Turnham Green",
-	"UPM": "Upminster",
-	"UPB": "Upminster Bridge",
-	"UPY": "Upney",
-	"UPK": "Upton Park",
-	"VIC": "Victoria",
-	"WBT": "West Brompton",
-	"WHM": "West Ham",
-	"WKN": "West Kensington",
-	"WMS": "Westminster",
-	"WCL": "Whitechapel",
-	"WDN": "Wimbledon",
-	"WMP": "Wimbledon Park",
-	"ALD": "Aldgate",
-	"BAR": "Barbican",
-	"ESQ": "Euston Square",
-	"FAR": "Farringdon",
-	"GPS": "Great Portland Street",
-	"HMS": "Hammersmith",
-	"KXX": "King's Cross St Pancras",
-	"MGT": "Moorgate",
-	"BER": "Bermondsey",
-	"CWR": "Canada Water",
-	"CWF": "Canary Wharf",
-	"CNT": "Canning Town",
-	"CPK": "Canons Park",
-	"DHL": "Dollis Hill",
-	"FRD": "Finchley Road",
-	"GPK": "Green Park",
-	"KIL": "Kilburn",
-	"KBY": "Kingsbury",
-	"LON": "London Bridge",
-	"NEA": "Neasden",
-	"NGW": "North Greenwich",
-	"QBY": "Queensbury",
-	"SWK": "Southwark",
-	"SJW": "St John's Wood",
-	"STA": "Stanmore",
-	"SWC": "Swiss Cottage",
-	"WPK": "Wembley Park",
-	"WHD": "West Hampstead",
-	"WLG": "Willesden Green",
-	"AME": "Amersham",
-	"CLF": "Chalfont & Latimer",
-	"CWD": "Chorleywood",
-	"CLW": "Colliers Wood",
-	"CRX": "Croxley",
-	"ETE": "Eastcote",
-	"HOH": "Harrow on the Hill",
-	"HDN": "Hillingdon",
-	"ICK": "Ickenham",
-	"MPK": "Moor Park",
-	"NHR": "North Harrow",
-	"NWP": "Northwick Park",
-	"NWD": "Northwood",
-	"NWH": "Northwood Hills",
-	"PIN": "Pinner",
-	"RLN": "Rayners Lane",
-	"RKY": "Rickmansworth",
-	"RUI": "Ruislip",
-	"RUM": "Ruislip Manor",
-	"UXB": "Uxbridge",
-	"WAT": "Watford",
-	"WHR": "West Harrow",
-	"ANG": "Angel",
-	"ARC": "Archway",
-	"BAL": "Balham",
-	"BPK": "Belsize Park",
-	"BOR": "Borough",
-	"BTX": "Brent Cross",
-	"BUR": "Burnt Oak",
-	"CTN": "Camden Town",
-	"CHF": "Chalk Farm",
-	"CPC": "Clapham Common",
-	"CPN": "Clapham North",
-	"CPS": "Clapham South",
-	"COL": "Colindale",
-	"EFY": "East Finchley",
-	"EDG": "Edgware",
-	"EUS": "Euston",
-	"FYC": "Finchley Central",
-	"GGR": "Golders Green",
-	"GST": "Goodge Street",
-	"HMP": "Hampstead",
-	"HND": "Hendon Central",
-	"HBT": "High Barnet",
-	"HIG": "Highgate",
-	"KEN": "Kennington",
-	"KTN": "Kentish Town",
-	"LSQ": "Leicester Square",
-	"MHE": "Mill Hill East",
-	"MOR": "Morden",
-	"MCR": "Mornington Crescent",
-	"OLD": "Old Street",
-	"OVL": "Oval",
-	"SWM": "South Wimbledon",
-	"STK": "Stockwell",
-	"TBE": "Tooting Bec",
-	"TBY": "Tooting Broadway",
-	"TOT": "Totteridge and Whetstone",
-	"TPK": "Tufnell Park",
-	"WST": "Warren Street",
-	"WFY": "West Finchley",
-	"WSP": "Woodside Park",
-	"ALP": "Alperton",
-	"AGR": "Arnos Grove",
-	"ARL": "Arsenal",
-	"BOS": "Boston Manor",
-	"BGR": "Bounds Green",
-	"CRD": "Caledonian Road",
-	"CFS": "Cockfosters",
-	"COV": "Covent Garden",
-	"FPK": "Finsbury Park",
-	"HTX": "Hatton Cross",
-	"HTF": "Heathrow Terminal 4",
-	"HRV": "Heathrow Terminal 5",
-	"HRC": "Heathrow Terminals 1, 2, 3",
-	"HRD": "Holloway Road",
-	"HNC": "Hounslow Central",
-	"HNE": "Hounslow East",
-	"HNW": "Hounslow West",
-	"HPC": "Hyde Park Corner",
-	"KNB": "Knightsbridge",
-	"MNR": "Manor House",
-	"NEL": "North Ealing",
-	"NFD": "Northfields",
-	"OAK": "Oakwood",
-	"OST": "Osterley",
-	"PRY": "Park Royal",
-	"RSQ": "Russell Square",
-	"SEL": "South Ealing",
-	"SHR": "South Harrow",
-	"SGT": "Southgate",
-	"SHL": "Sudbury Hill",
-	"STN": "Sudbury Town",
-	"TPL": "Turnpike Lane",
-	"WGN": "Wood Green",
-	"BHR": "Blackhorse Road",
-	"BRX": "Brixton",
-	"HBY": "Highbury and Islington",
-	"PIM": "Pimlico",
-	"SVS": "Seven Sisters",
-	"TTH": "Tottenham Hale",
-	"VUX": "Vauxhall",
-	"WAL": "Walthamstow Central",
-	"WDL": "Wood Lane",
-	"PRE": "Preston Road",
-}
+STATIONS = defaultdict(list)
+LINES = set()
 
-LINES_AT_STATION = {	
-	"BST": ["B", "H", "J", "M"],
-	"CHX": ["B", "N"],
-	"ERB": ["B"],
-	"ELE": ["B", "N"],
-	"EMB": ["B", "D", "H", "N", "I"],
-	"HSD": ["B"],
-	"HAW": ["B"],
-	"KGN": ["B"],
-	"KNT": ["B"],
-	"KPK": ["B"],
-	"LAM": ["B"],
-	"MDV": ["B"],
-	"MYB": ["B"],
-	"NWM": ["B"],
-	"OXC": ["B", "C", "V"],
-	"PAD": ["B", "H", "D", "I"],
-	"PIC": ["B", "P"],
-	"QPK": ["B"],
-	"RPK": ["B"],
-	"SKT": ["B"],
-	"SPK": ["B"],
-	"WAR": ["B"],
-	"WLO": ["B", "J", "N", "W"],
-	"WEM": ["B"],
-	"WJN": ["B"],
-	"BNK": ["C", "N", "W", "D", "I"],
-	"BDE": ["C"],
-	"BNG": ["C"],
-	"BDS": ["C", "J"],
-	"BHL": ["C"],
-	"CYL": ["C"],
-	"CHG": ["C"],
-	"DEB": ["C"],
-	"EBY": ["C", "D"],
-	"EAC": ["C"],
-	"EPP": ["C"],
-	"FLP": ["C"],
-	"GHL": ["C"],
-	"GRH": ["C"],
-	"GFD": ["C"],
-	"HAI": ["C"],
-	"HLN": ["C"],
-	"HOL": ["C", "P"],
-	"HPK": ["C"],
-	"LAN": ["C"],
-	"LEY": ["C"],
-	"LYS": ["C"],
-	"LST": ["C", "H", "M"],
-	"LTN": ["C"],
-	"MAR": ["C"],
-	"MLE": ["C", "D", "H"],
-	"NEP": ["C"],
-	"NAC": ["C"],
-	"NHT": ["C"],
-	"NHG": ["C", "D", "I"],
-	"PER": ["C"],
-	"QWY": ["C"],
-	"RED": ["C"],
-	"ROD": ["C"],
-	"RUG": ["C"],
-	"SBC": ["C"],
-	"SNB": ["C"],
-	"SRP": ["C"],
-	"SWF": ["C"],
-	"STP": ["C"],
-	"SFD": ["C", "J"],
-	"THB": ["C"],
-	"TCR": ["C", "N"],
-	"WAN": ["C"],
-	"WAC": ["C"],
-	"WRP": ["C"],
-	"WCT": ["C"],
-	"WFD": ["C"],
-	"ACT": ["D", "P"],
-	"ALE": ["D", "H"],
-	"BKG": ["D", "H"],
-	"BCT": ["D", "P"],
-	"BEC": ["D"],
-	"BLF": ["D", "H"],
-	"BWR": ["D", "H"],
-	"BBB": ["D", "H"],
-	"CST": ["D", "H", "I"],
-	"CHP": ["D"],
-	"DGE": ["D"],
-	"DGH": ["D"],
-	"ECM": ["D", "P"],
-	"ECT": ["D", "P"],
-	"EHM": ["D", "H"],
-	"EPY": ["D"],
-	"ERD": ["D", "H"],
-	"EPK": ["D"],
-	"FBY": ["D"],
-	"GRD": ["D", "H", "P"],
-	"GUN": ["D"],
-	"HMD": ["D", "P"],
-	"HST": ["D", "H"],
-	"HCH": ["D"],
-	"OLY": ["D"],
-	"KEW": ["D"],
-	"MAN": ["D", "H"],
-	"MON": ["D", "H"],
-	"PGR": ["D"],
-	"PLW": ["D", "H"],
-	"PUT": ["D"],
-	"RCP": ["D"],
-	"RMD": ["D"],
-	"SSQ": ["D", "H"],
-	"SKN": ["D", "H", "P"],
-	"SFS": ["D"],
-	"SJP": ["D", "H"],
-	"STB": ["D"],
-	"STG": ["D", "H"],
-	"TEM": ["D", "H", "I"],
-	"THL": ["D", "H"],
-	"TGR": ["D", "P"],
-	"UPM": ["D"],
-	"UPB": ["D"],
-	"UPY": ["D"],
-	"UPK": ["D", "H"],
-	"VIC": ["D", "H", "V", "I"],
-	"WBT": ["D"],
-	"WHM": ["D", "H", "J"],
-	"WKN": ["D"],
-	"WMS": ["D", "H", "J"],
-	"WCL": ["D", "H"],
-	"WDN": ["D"],
-	"WMP": ["D"],
-	"ALD": ["H", "M", "I"],
-	"BAR": ["H", "M"],
-	"ESQ": ["H", "M"],
-	"FAR": ["H", "M"],
-	"GPS": ["H", "M"],
-	"HMS": ["H", "D", "I", "P"],
-	"KXX": ["H", "M", "N", "P", "V"],
-	"MGT": ["H", "M", "N", "I"],
-	"BER": ["J"],
-	"CWR": ["J"],
-	"CWF": ["J"],
-	"CNT": ["J"],
-	"CPK": ["J"],
-	"DHL": ["J"],
-	"FRD": ["J", "M"],
-	"GPK": ["J", "P", "V"],
-	"KIL": ["J"],
-	"KBY": ["J"],
-	"LON": ["J", "N"],
-	"NEA": ["J"],
-	"NGW": ["J"],
-	"QBY": ["J"],
-	"SWK": ["J"],
-	"SJW": ["J"],
-	"STA": ["J"],
-	"SWC": ["J"],
-	"WPK": ["J", "M"],
-	"WHD": ["J"],
-	"WLG": ["J"],
-	"AME": ["M"],
-	"CLF": ["M"],
-	"CWD": ["M"],
-	"CLW": ["M", "N"],
-	"CRX": ["M"],
-	"ETE": ["M", "P"],
-	"HOH": ["M"],
-	"HDN": ["M", "P"],
-	"ICK": ["M", "P"],
-	"MPK": ["M"],
-	"NHR": ["M"],
-	"NWP": ["M"],
-	"NWD": ["M"],
-	"NWH": ["M"],
-	"PIN": ["M"],
-	"RLN": ["M", "P"],
-	"RKY": ["M"],
-	"RUI": ["M", "P"],
-	"RUM": ["M", "P"],
-	"UXB": ["M", "P"],
-	"WAT": ["M"],
-	"WHR": ["M"],
-	"ANG": ["N"],
-	"ARC": ["N"],
-	"BAL": ["N"],
-	"BPK": ["N"],
-	"BOR": ["N"],
-	"BTX": ["N"],
-	"BUR": ["N"],
-	"CTN": ["N"],
-	"CHF": ["N"],
-	"CPC": ["N"],
-	"CPN": ["N"],
-	"CPS": ["N"],
-	"COL": ["N"],
-	"EFY": ["N"],
-	"EDG": ["N"],
-	"EUS": ["N", "V"],
-	"FYC": ["N"],
-	"GGR": ["N"],
-	"GST": ["N"],
-	"HMP": ["N"],
-	"HND": ["N"],
-	"HBT": ["N"],
-	"HIG": ["N"],
-	"KEN": ["N"],
-	"KTN": ["N"],
-	"LSQ": ["N", "P"],
-	"MHE": ["N"],
-	"MOR": ["N"],
-	"MCR": ["N"],
-	"OLD": ["N"],
-	"OVL": ["N"],
-	"SWM": ["N"],
-	"STK": ["N", "V"],
-	"TBE": ["N"],
-	"TBY": ["N"],
-	"TOT": ["N"],
-	"TPK": ["N"],
-	"WST": ["N", "V"],
-	"WFY": ["N"],
-	"WSP": ["N"],
-	"ALP": ["P"],
-	"AGR": ["P"],
-	"ARL": ["P"],
-	"BOS": ["P"],
-	"BGR": ["P"],
-	"CRD": ["P"],
-	"CFS": ["P"],
-	"COV": ["P"],
-	"FPK": ["P", "V"],
-	"HTX": ["P"],
-	"HTF": ["P"],
-	"HRV": ["P"],
-	"HRC": ["P"],
-	"HRD": ["P"],
-	"HNC": ["P"],
-	"HNE": ["P"],
-	"HNW": ["P"],
-	"HPC": ["P"],
-	"KNB": ["P"],
-	"MNR": ["P"],
-	"NEL": ["P"],
-	"NFD": ["P"],
-	"OAK": ["P"],
-	"OST": ["P"],
-	"PRY": ["P"],
-	"RSQ": ["P"],
-	"SEL": ["P"],
-	"SHR": ["P"],
-	"SGT": ["P"],
-	"SHL": ["P"],
-	"STN": ["P"],
-	"TPL": ["P"],
-	"WGN": ["P"],
-	"BHR": ["V"],
-	"BRX": ["V"],
-	"HBY": ["V"],
-	"PIM": ["V"],
-	"SVS": ["V"],
-	"TTH": ["V"],
-	"VUX": ["V"],
-	"WAL": ["V"],
-	"WDL": ["I", "H", "D"],
-	"PRE": ["M"],
-}
 
-def getLineAbbreviation(line):
-	"""Returns the abbreviation of a specified line, or None if it doesn't exist"""
-	for abbreviation, name in LINES.items():
-		if name == line:
-			return abbreviation
-
-	return None
-
-def getStationAbbreviation(station):
-	"""Returns the abbreviation of a specified station, or None if it doesn't exist"""
-	for abbreviation, name in STATIONS.items():
-		if name == station:
-			return abbreviation
-
-	return None
+for match in _matches:
+	for line in re.compile("\[([^\[\]]*)\]").findall(match.group(2)):
+		STATIONS[match.group(1)].append(line)
+		LINES.add(line)
 
 class Interpreter:
 	"""
@@ -596,8 +329,8 @@ class Interpreter:
 		self.Accumulator = acc
 
 		# Initialize Station Values to their names
-		for station in STATIONS:
-			self.StationValues[station] = STATIONS[station]
+		for station in STATIONS.keys():
+			self.StationValues[station] = station
 
 		while self._InstructionPointer < len(self.Code):
 			self.move()
@@ -613,10 +346,7 @@ class Interpreter:
 		destination = match.group(2)
 
 		if self.areStationsConnected(self.DataPointer, destination, line):
-			# Find the abbreviation of a station
-			abbreviation = getStationAbbreviation(destination)
-
-			if abbreviation is None:
+			if destination not in STATIONS.keys():
 				raise RuntimeError("Station " + destination + " doesn't exist.")
 
 			if self._verbose:
@@ -643,18 +373,13 @@ class Interpreter:
 			line - the line to use
 		"""
 
-		# Identify the line
-		lineAbbreviation        = getLineAbbreviation(line)
-		originAbbreviation      = getStationAbbreviation(origin)
-		destinationAbbreviation = getStationAbbreviation(destination)
-
-		if lineAbbreviation is None:
+		if line not in LINES:
 			raise RuntimeError("Line " + line + " doesn't exist.")
 
-		if lineAbbreviation not in LINES_AT_STATION[originAbbreviation]:
+		if origin not in STATIONS.keys():
 			raise RuntimeError("Station " + origin + " doesn't have access to " + line + " Line.")
 
-		if lineAbbreviation not in LINES_AT_STATION[destinationAbbreviation]:
+		if destination not in STATIONS.keys():
 			raise RuntimeError("Station " + destination + " doesn't have access to " + line + " Line.")
 
 		return True
@@ -668,14 +393,13 @@ class Interpreter:
 		"""
 		before = self.DataPointer
 		self.DataPointer = station
-		abbreviation = getStationAbbreviation(station)
 
 		action = None
 		performDefault = False
 
 		# Debug
 		if self._verbose:
-			print ("Before: " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")")
+			print ("Before: " + str(self.Accumulator) + " (" + str(self.StationValues[station]) + ")")
 
 		# add
 		if station == "Upminster":
@@ -719,7 +443,7 @@ class Interpreter:
 
 		# bitwise NOT
 		elif station == "Notting Hill Gate":
-			if isinstance(self.StationValues[abbreviation], int):
+			if isinstance(self.StationValues[station], int):
 				action = lambda a, b : ~b
 			else:
 				performDefault = True
@@ -729,7 +453,7 @@ class Interpreter:
 			match = re.search("-?\d+", self.Accumulator)
 			station = self.Accumulator[match.end():]
 			self.Accumulator = 0 if not(match) else match.group()
-			self.StationValues[abbreviation] = "" if not(match) else station
+			self.StationValues[station] = "" if not(match) else station
 
 		# 7
 		elif station == "Seven Sisters":
@@ -738,88 +462,88 @@ class Interpreter:
 		# character <> codepoint
 		elif station == "Charing Cross":
 			acc = self.Accumulator
-			if isinstance(self.StationValues[abbreviation], str):
-				self.Accumulator = ord(self.StationValues[abbreviation][0]) if len(self.StationValues[abbreviation]) > 0 else 0
+			if isinstance(self.StationValues[station], str):
+				self.Accumulator = ord(self.StationValues[station][0]) if len(self.StationValues[station]) > 0 else 0
 			else:
-				self.Accumulator = chr(self.StationValues[abbreviation]) 
+				self.Accumulator = chr(self.StationValues[station]) 
 
-			self.StationValues[abbreviation] = acc
+			self.StationValues[station] = acc
 
 		# string concatenation
 		elif station == "Paddington":
 			acc = self.Accumulator
-			if isinstance(self.StationValues[abbreviation], str) and isinstance(self.Accumulator, str):
-				self.Accumulator = self.StationValues[abbreviation] + self.Accumulator					
-				self.StationValues[abbreviation] = acc
-				self.StationValues[abbreviation] = acc
+			if isinstance(self.StationValues[station], str) and isinstance(self.Accumulator, str):
+				self.Accumulator = self.StationValues[station] + self.Accumulator					
+				self.StationValues[station] = acc
+				self.StationValues[station] = acc
 			else:
-				self.swapValues(abbreviation)
+				self.swapValues(station)
 
 		# left substring
 		elif station == "Gunnersbury":
 			acc = self.Accumulator
-			if (isinstance(self.StationValues[abbreviation], str) and isinstance(self.Accumulator, str)) or (isinstance(self.StationValues[abbreviation], int) and isinstance(self.Accumulator, int)):
-				self.swapValues(abbreviation)
+			if (isinstance(self.StationValues[station], str) and isinstance(self.Accumulator, str)) or (isinstance(self.StationValues[station], int) and isinstance(self.Accumulator, int)):
+				self.swapValues(station)
 
-			elif isinstance(self.StationValues[abbreviation], str) and isinstance(self.Accumulator, int):
+			elif isinstance(self.StationValues[station], str) and isinstance(self.Accumulator, int):
 				if self.Accumulator < 0:
 					raise RuntimeError("Cannot be negative.")
 				
-				self.Accumulator = self.StationValues[abbreviation][:self.Accumulator]
-				self.StationValues[abbreviation] = acc
+				self.Accumulator = self.StationValues[station][:self.Accumulator]
+				self.StationValues[station] = acc
 
-			elif isinstance(self.StationValues[abbreviation], int) and isinstance(self.Accumulator, str):
-				if self.StationValues[abbreviation] < 0:
+			elif isinstance(self.StationValues[station], int) and isinstance(self.Accumulator, str):
+				if self.StationValues[station] < 0:
 					raise RuntimeError("Cannot be negative.")
 
-				self.Accumulator = self.Accumulator[:self.StationValues[abbreviation]]
-				self.StationValues[abbreviation] = acc
+				self.Accumulator = self.Accumulator[:self.StationValues[station]]
+				self.StationValues[station] = acc
 
 		# right substring
 		elif station == "Mile End":
 			acc = self.Accumulator
-			if (isinstance(self.StationValues[abbreviation], str) and isinstance(self.Accumulator, str)) or (isinstance(self.StationValues[abbreviation], int) and isinstance(self.Accumulator, int)):
+			if (isinstance(self.StationValues[station], str) and isinstance(self.Accumulator, str)) or (isinstance(self.StationValues[station], int) and isinstance(self.Accumulator, int)):
 				performDefault = True
 
-			elif isinstance(self.StationValues[abbreviation], str) and isinstance(self.Accumulator, int):
+			elif isinstance(self.StationValues[station], str) and isinstance(self.Accumulator, int):
 				if self.Accumulator < 0:
 					raise RuntimeError("Cannot be negative.")
-				self.Accumulator = self.StationValues[abbreviation][-self.Accumulator:]
-				self.StationValues[abbreviation] = acc
+				self.Accumulator = self.StationValues[station][-self.Accumulator:]
+				self.StationValues[station] = acc
 
-			elif isinstance(self.StationValues[abbreviation], int) and isinstance(self.Accumulator, str):
-				if self.StationValues[abbreviation] < 0:
+			elif isinstance(self.StationValues[station], int) and isinstance(self.Accumulator, str):
+				if self.StationValues[station] < 0:
 					raise RuntimeError("Cannot be negative.")
 
-				self.Accumulator = self.Accumulator[-self.StationValues[abbreviation]:]
-				self.StationValues[abbreviation] = acc
+				self.Accumulator = self.Accumulator[-self.StationValues[station]:]
+				self.StationValues[station] = acc
 
 		# upper-case
 		elif station == "Upney":
 			acc = self.Accumulator
-			if isinstance(self.StationValues[abbreviation], str):
-				self.Accumulator = self.StationValues[abbreviation].upper()
-				self.StationValues[abbreviation] = acc
+			if isinstance(self.StationValues[station], str):
+				self.Accumulator = self.StationValues[station].upper()
+				self.StationValues[station] = acc
 			else:
 				performDefault = True
 
 		# lower-case
 		elif station == "Hounslow Central":
 			acc = self.Accumulator
-			if isinstance(self.StationValues[abbreviation], str):
-				self.Accumulator = self.StationValues[abbreviation][::-1]
+			if isinstance(self.StationValues[station], str):
+				self.Accumulator = self.StationValues[station][::-1]
 			else:
 				performDefault = True
 
 		# store
 		elif station == "Bank":
-			self.swapValues(abbreviation)
+			self.swapValues(station)
 			# Set Hammersmith to the same value
-			self.StationValues["HMS"] = self.StationValues[abbreviation]
+			self.StationValues["Hammersmith"] = self.StationValues[station]
 
 		# retain
 		elif station == "Hammersmith":
-			self.Accumulator = self.StationValues[abbreviation]
+			self.Accumulator = self.StationValues[station]
 
 		# continuation
 		elif station == "Temple":
@@ -849,24 +573,24 @@ class Interpreter:
 			try:
 				acc = self.Accumulator
 				self.Accumulator = int(self.Accumulator)
-				self.StationValues[abbreviation] = int(self.StationValues[abbreviation])
+				self.StationValues[station] = int(self.StationValues[station])
 
-				self.Accumulator = action(self.Accumulator, self.StationValues[abbreviation])
-				self.StationValues[abbreviation] = acc
+				self.Accumulator = action(self.Accumulator, self.StationValues[station])
+				self.StationValues[station] = acc
 			except (ValueError, TypeError):
 				performDefault = True
 
 		if performDefault:
-			self.swapValues(abbreviation)
+			self.swapValues(station)
 
 		# Debug
 		if self._verbose:
-			print ("After:  " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")")
+			print ("After:  " + str(self.Accumulator) + " (" + str(self.StationValues[station]) + ")")
 			print ("")
 
-	def swapValues(self, abbreviation):
-		"""Swaps the values of the Accumulator and the station with the specified abbreviation"""
-		self.Accumulator, self.StationValues[abbreviation] = self.StationValues[abbreviation], self.Accumulator
+	def swapValues(self, station):
+		"""Swaps the values of the Accumulator and the specified station"""
+		self.Accumulator, self.StationValues[station] = self.StationValues[station], self.Accumulator
 
 if __name__ == "__main__":
 	import argparse
