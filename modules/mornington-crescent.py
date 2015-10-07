@@ -718,10 +718,11 @@ class Interpreter:
 			action = lambda a, b : ~b
 
 		# parse string to integer
-		elif station == "Parson Green":
-			match = re.search('/-?\d+/', self.Accumulator)
-			self.Accumulator = 0 if Not(match) else match.group()
-			self.StationValues[abbreviation] = "" if Not(match) else self.Accumulator[match.end()]
+		elif station == "Parsons Green":
+			match = re.search("-?\d+", self.Accumulator)
+			station = self.Accumulator[match.end():]
+			self.Accumulator = 0 if not(match) else match.group()
+			self.StationValues[abbreviation] = "" if not(match) else station
 
 		# 7
 		elif station == "Seven Sisters":
