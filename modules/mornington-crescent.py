@@ -566,20 +566,22 @@ class Interpreter:
 	"""
 
 	# Environment
-	Accumulator = "" # sys.stdin.readline()
+	Accumulator = ""
 	DataPointer = "Mornington Crescent";
 	Jumpstack   = []
 	StationValues = {}
 
 	Code = []
 	_InstructionPointer = 0
+	_verbose = False
 
-	def __init__(self, code):
+	def __init__(self, code, acc, verbose):
 		"""
 		Initialize a new interpreter.
 
 		Arguments:
 			code -- the code to execute as a string
+			acc -- initialization value for accumulator
 		"""
 		for line in iter(code.splitlines()):
 			pattern = re.compile("^Take (.*) Line to (.*)$")
@@ -587,6 +589,9 @@ class Interpreter:
 			# Add only valid lines to the code list, ignoring the rest.
 			if pattern.match(line):
 				self.Code.append(line)
+
+		self._verbose = verbose
+		self.Accumulator = acc
 
 		# Initialize Station Values to their names
 		for station in STATIONS:
@@ -664,8 +669,9 @@ class Interpreter:
 		performDefault = False
 
 		# Debug
-		# print "[" + str(self._InstructionPointer) + "] From " + before + " to " + station + appendix
-		# print "Before: " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")"
+		if self._verbose:
+			print ("[" + str(self._InstructionPointer) + "] From " + before + " to " + station)
+			print ("Before: " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")")
 
 		# add
 		if station == "Upminster":
@@ -677,7 +683,7 @@ class Interpreter:
 		
 		# integer division
 		elif station == "Cannon Street":
-			action = lambda a, b : "" if b == 0 else a / b
+			action = lambda a, b : "" if b == 0 else int(round(a / b))
 
 		# remainder
 		elif station == "Preston Road":
@@ -716,7 +722,6 @@ class Interpreter:
 			match = re.search('/-?\d+/', self.Accumulator)
 			self.Accumulator = 0 if Not(match) else match.group()
 			self.StationValues[abbreviation] = "" if Not(match) else self.Accumulator[match.end()]
-			# IMPLEMENT!!
 
 		# 7
 		elif station == "Seven Sisters":
@@ -826,7 +831,7 @@ class Interpreter:
 
 		# output/exit
 		elif station == "Mornington Crescent":
-			print self.Accumulator
+			print(self.Accumulator)
 			sys.exit()
 
 		else:
@@ -847,8 +852,9 @@ class Interpreter:
 			self.swapValues(abbreviation)
 
 		# Debug
-		# print "After:  " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")"
-		# print ""
+		if self._verbose:
+			print ("After:  " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")")
+			print ("")
 
 	def swapValues(self, abbreviation):
 		"""Swaps the values of the Accumulator and the station with the specified abbreviation"""
@@ -864,20 +870,26 @@ if __name__ == "__main__":
 		%(prog)s <script file>""",
 	formatter_class=argparse.RawDescriptionHelpFormatter)
 	
-	group = parser.add_argument_group("code")
-	code_group = group.add_argument_group()
-	code_group.add_argument("script",
-	                        type=argparse.FileType("r"),
-	                        nargs="?",
-	                        help=".tube file to execute")
+	parser.add_argument("script",
+	                    type=argparse.FileType("r"),
+	                    nargs="?",
+	                    help=".tube file to execute")
+
+	# Still not ideal, according to the specification it requires the accumulator to come from stdin.
+	# But it'll do for now.
+	parser.add_argument("-a", "--accumulator", 
+	                   	help="the value to initialize the accumulator to",
+	                   	default="")
+
+	parser.add_argument("-v", "--verbose", 
+	                    help="increase output verbosity",
+	                    action="store_true")
 
 	arguments = parser.parse_args()
 
-	code = None
 	if arguments.script:
 		code = arguments.script.read()
 		arguments.script.close()
+		interpreter = Interpreter(code, arguments.accumulator, arguments.verbose)
 	else:
-		print "You shall not pass!"
-
-	interpreter = Interpreter(code)
+		print("You need to provide a path to your program!")
