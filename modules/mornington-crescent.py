@@ -176,7 +176,7 @@ STATIONS = {
 	"WHD": "West Hampstead",
 	"WLG": "Willesden Green",
 	"AME": "Amersham",
-	"CLF": "Chalfont and Latimer",
+	"CLF": "Chalfont & Latimer",
 	"CWD": "Chorleywood",
 	"CLW": "Colliers Wood",
 	"CRX": "Croxley",
@@ -278,7 +278,8 @@ STATIONS = {
 	"TTH": "Tottenham Hale",
 	"VUX": "Vauxhall",
 	"WAL": "Walthamstow Central",
-	"WDL": "Wood Lane"	
+	"WDL": "Wood Lane",
+	"PRE": "Preston Road",
 }
 
 LINES_AT_STATION = {	
@@ -286,7 +287,7 @@ LINES_AT_STATION = {
 	"CHX": ["B", "N"],
 	"ERB": ["B"],
 	"ELE": ["B", "N"],
-	"EMB": ["B", "D", "H", "N"],
+	"EMB": ["B", "D", "H", "N", "I"],
 	"HSD": ["B"],
 	"HAW": ["B"],
 	"KGN": ["B"],
@@ -336,7 +337,7 @@ LINES_AT_STATION = {
 	"NEP": ["C"],
 	"NAC": ["C"],
 	"NHT": ["C"],
-	"NHG": ["C", "D"],
+	"NHG": ["C", "D", "I"],
 	"PER": ["C"],
 	"QWY": ["C"],
 	"RED": ["C"],
@@ -363,7 +364,7 @@ LINES_AT_STATION = {
 	"BLF": ["D", "H"],
 	"BWR": ["D", "H"],
 	"BBB": ["D", "H"],
-	"CST": ["D", "H"],
+	"CST": ["D", "H", "I"],
 	"CHP": ["D"],
 	"DGE": ["D"],
 	"DGH": ["D"],
@@ -394,7 +395,7 @@ LINES_AT_STATION = {
 	"SJP": ["D", "H"],
 	"STB": ["D"],
 	"STG": ["D", "H"],
-	"TEM": ["D", "H"],
+	"TEM": ["D", "H", "I"],
 	"THL": ["D", "H"],
 	"TGR": ["D", "P"],
 	"UPM": ["D"],
@@ -409,14 +410,14 @@ LINES_AT_STATION = {
 	"WCL": ["D", "H"],
 	"WDN": ["D"],
 	"WMP": ["D"],
-	"ALD": ["H", "M"],
+	"ALD": ["H", "M", "I"],
 	"BAR": ["H", "M"],
 	"ESQ": ["H", "M"],
 	"FAR": ["H", "M"],
 	"GPS": ["H", "M"],
-	"HMS": ["H", "D"],
+	"HMS": ["H", "D", "I", "P"],
 	"KXX": ["H", "M", "N", "P", "V"],
-	"MGT": ["H", "M", "N"],
+	"MGT": ["H", "M", "N", "I"],
 	"BER": ["J"],
 	"CWR": ["J"],
 	"CWF": ["J"],
@@ -541,7 +542,8 @@ LINES_AT_STATION = {
 	"TTH": ["V"],
 	"VUX": ["V"],
 	"WAL": ["V"],
-	"WDL": ["I", "H", "D"]
+	"WDL": ["I", "H", "D"],
+	"PRE": ["M"],
 }
 
 def getLineAbbreviation(line):
@@ -597,7 +599,7 @@ class Interpreter:
 		for station in STATIONS:
 			self.StationValues[station] = STATIONS[station]
 
-		for instruction in self.Code:
+		while self._InstructionPointer < len(self.Code):
 			self.move()
 
 	def move(self):
@@ -616,6 +618,9 @@ class Interpreter:
 
 			if abbreviation is None:
 				raise RuntimeError("Station " + destination + " doesn't exist.")
+
+			if self._verbose:
+				print ("[" + str(self._InstructionPointer) + "] " + code)
 
 			self.executeStation(destination)
 
@@ -670,7 +675,6 @@ class Interpreter:
 
 		# Debug
 		if self._verbose:
-			print ("[" + str(self._InstructionPointer) + "] From " + before + " to " + station)
 			print ("Before: " + str(self.Accumulator) + " (" + str(self.StationValues[abbreviation]) + ")")
 
 		# add
@@ -683,11 +687,11 @@ class Interpreter:
 		
 		# integer division
 		elif station == "Cannon Street":
-			action = lambda a, b : "" if b == 0 else int(round(a / b))
+			action = lambda a, b : "" if b == 0 else int(round(b / a))
 
 		# remainder
 		elif station == "Preston Road":
-			action = lambda a, b : "" if b == 0 else a % b
+			action = lambda a, b : "" if b == 0 else b % a
 		
 		# max
 		elif station == "Bounds Green":
@@ -703,19 +707,22 @@ class Interpreter:
 
 		# bitwise Shift-Right
 		elif station == "Holland Park":
-			action = lambda a, b : a if b == 0 else a >> b
+			action = lambda a, b : b if a == 0 else b >> a
 
 		# bitwise Shift-Left
 		elif station == "Stepney Green":
-			action = lambda a, b : a if b == 0 else a << b
+			action = lambda a, b : b if a == 0 else b << a
 
 		# square
 		elif station == "Russell Square":
-			action = lambda a, b : b**2
+			action = lambda a, b : b * b
 
 		# bitwise NOT
 		elif station == "Notting Hill Gate":
-			action = lambda a, b : ~b
+			if isinstance(self.StationValues[abbreviation], int):
+				action = lambda a, b : ~b
+			else:
+				performDefault = True
 
 		# parse string to integer
 		elif station == "Parsons Green":
@@ -819,8 +826,8 @@ class Interpreter:
 			self.Jumpstack.append(self._InstructionPointer)
 
 		# if
-		elif station == "Angle":
-			if Not(isinstance(self.Accumulator, int) and self.Accumulator == 0):
+		elif station == "Angel":
+			if not(isinstance(self.Accumulator, int) and self.Accumulator == 0):
 				self.DataPointer = "Temple"
 				last = self.Jumpstack.pop() # We don't want to pop it.
 				self.Jumpstack.append(last) # So we store it again.
@@ -874,7 +881,7 @@ if __name__ == "__main__":
 	parser.add_argument("script",
 	                    type=argparse.FileType("r"),
 	                    nargs="?",
-	                    help=".tube file to execute")
+	                    help=".mcresc file to execute")
 
 	# Still not ideal, according to the specification it requires the accumulator to come from stdin.
 	# But it'll do for now.
