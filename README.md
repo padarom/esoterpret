@@ -11,4 +11,18 @@ Esoterpret is an extensible esoteric programming language interpreter written in
 
 You're free to add your own interpreters if you want to and file a pull request for them. Our contribution guide will help get you started! (_Coming Soon!_)
 
+## How to use
+Esoterpret requires Python 3. Just download the repository (or clone it) and run `esoterpret.py`:
+```sh
+$ python esoterpret.py --help
+```
+
+Interpreters for specific languages can be found in the `modules` directory. Using the parameter `--list-languages` you can list all languages that include a valid config file:
+
+```sh
+$ python esoterpret.py --list-languages
+- Brainfuck (brainfuck)
+- Mornington Crescent (morningtoncrescent)
+```
+
 [Mornington Crescent]: http://esolangs.org/wiki/Mornington_Crescent

@@ -12,13 +12,15 @@ Repository: https://github.com/Padarom/Esoterpret
 class Interpreter:
 	test = ""
 
-import argparse, os, sys, importlib, json
-import esoterpret.interactive as interactive
+import argparse, os, sys, imp
 
 # Add current path to sys.path, so we can import modules
-path = os.path.abspath(".")
-if path not in sys.path:
-	sys.path.insert(0, path)
+path = os.path.dirname(os.path.realpath(__file__))
+#if path not in sys.path:
+#	sys.path.insert(0, path)
+
+import esoterpret.interactive as interactive
+from esoterpret.language import Language
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="""
@@ -32,6 +34,10 @@ if __name__ == "__main__":
 	parser.add_argument("-l", "--language", 
 	                    help="the language you want to execute")
 
+	parser.add_argument("--list-languages", 
+	                    help="list available languages",
+	                    action="store_true")
+
 	arguments = parser.parse_args()
 
 	if arguments.interactive:
@@ -39,23 +45,21 @@ if __name__ == "__main__":
 		cli.menu()
 		cli.unset()
 
-	if arguments.language is not None:
+	elif arguments.list_languages:
+		for item in os.listdir(path + "/modules"):
+			if os.path.isdir(path + "/modules/" + item) and item != "__pycache__":
+				try:
+					language = Language(item)
+					print("- %s (%s)" % (language.Config["name"], item))
+				except:
+					pass
+
+	elif arguments.language is not None:
 		try:
-			# Load config
-			content = None
-			with open("modules/" + arguments.language + ".json", "r") as config:
-				content = config.read()
+			language = Language(arguments.language)
+			interpreter = language.Class("", "")
 
-			config = json.loads(content)
-			
-			# Import the module
-			mc = importlib.import_module('modules.' + arguments.language)
-			# Get the class
-			class_ = getattr(mc, config["baseclass"])
-			# Initialize the class
-			interpreter = class_("Take Northern Line to Bank", "")
-
-		except (ImportError, FileNotFoundError):
+		except (ImportError):
 			print("No Interpreter for " + arguments.language + " found.")
-		except json.decoder.JSONDecodeError:
-			print("The config file for " + arguments.language + " is not a valid JSON.")
+		except FileNotFoundError:
+			print("Config file could not be loaded.")

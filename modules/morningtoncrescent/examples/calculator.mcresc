@@ -1,0 +1,44 @@
+Take Northern Line to Bank
+Take District Line to Hammersmith
+Take District Line to Parsons Green
+Take District Line to Victoria
+# First operand is now stored in Victoria.
+Take District Line to Hammersmith
+Take District Line to Parsons Green
+Take District Line to Bank
+Take District Line to Hammersmith
+Take District Line to Parsons Green
+Take District Line to Bank
+Take District Line to Hammersmith
+Take District Line to Embankment
+Take District Line to Embankment
+Take Bakerloo Line to Charing Cross
+Take Bakerloo Line to Charing Cross
+Take Bakerloo Line to Embankment
+# The codepoint of the operation is now stored in Embankment.
+Take District Line to Hammersmith
+Take District Line to Parsons Green
+Take District Line to Westminster
+# Second operand is now stored in Westminster
+
+# Next step:
+# Execute every instruction (+, *, /, -)
+# Store + result in Redbridge
+# Store - result in Gants Hill
+# Store / result in Newbury Park
+# Store * result in Barkingside
+# Go to Temple
+# Swap Redbridge and Gants Hill
+# Test if instruction is +
+# Codepoints:
+#   +: 43
+#   *: 42
+#   /: 47
+#   -: 45
+# Angel -> Swap again
+# Repeat for every instruction
+# Move result to Mornington Crescent
+
+# For now:
+Take Jubilee Line to London Bridge
+Take Northern Line to Mornington Crescent

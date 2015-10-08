@@ -1,6 +1,7 @@
 {
 	"name": "Mornington Crescent",
 	"baseclass": "MorningtonCrescentInterpreter",
+	"basefile": "morningtoncrescent.py",
 	"extension": ".mcresc",
 	"author":
 	{

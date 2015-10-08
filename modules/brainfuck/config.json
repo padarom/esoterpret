@@ -1,0 +1,11 @@
+{
+	"name": "Brainfuck",
+	"baseclass": "BrainfuckInterpreter",
+	"basefile": "brainfuck.py",
+	"extension": ".bf",
+	"author":
+	{
+		"name": "Christopher Mühl",
+		"email": "cmuehl@unitybox.de"
+	}
+}

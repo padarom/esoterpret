@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-class Interpreter(metaclass=ABCMeta):
+class AbstractInterpreter(metaclass=ABCMeta):
 	InstructionPointer = 0
 	Code = None
 
