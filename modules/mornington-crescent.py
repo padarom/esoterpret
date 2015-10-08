@@ -349,10 +349,17 @@ class Interpreter:
 			if destination not in STATIONS.keys():
 				raise RuntimeError("Station " + destination + " doesn't exist.")
 
+			# Debug
 			if self._verbose:
 				print ("[" + str(self._InstructionPointer) + "] " + code)
+				print ("Before: " + str(self.Accumulator) + " (" + str(self.StationValues[destination]) + ")")
 
 			self.executeStation(destination)
+
+			# Debug
+			if self._verbose:
+				print ("After:  " + str(self.Accumulator) + " (" + str(self.StationValues[destination]) + ")")
+				print ("")
 
 		else:
 			raise RuntimeError("Stations " + self.DataPointer + " and " + destination + " are not connected through " + line + " Line.")
@@ -376,10 +383,10 @@ class Interpreter:
 		if line not in LINES:
 			raise RuntimeError("Line " + line + " doesn't exist.")
 
-		if origin not in STATIONS.keys():
+		if line not in STATIONS[origin]:
 			raise RuntimeError("Station " + origin + " doesn't have access to " + line + " Line.")
 
-		if destination not in STATIONS.keys():
+		if line not in STATIONS[destination]:
 			raise RuntimeError("Station " + destination + " doesn't have access to " + line + " Line.")
 
 		return True
@@ -396,10 +403,6 @@ class Interpreter:
 
 		action = None
 		performDefault = False
-
-		# Debug
-		if self._verbose:
-			print ("Before: " + str(self.Accumulator) + " (" + str(self.StationValues[station]) + ")")
 
 		# add
 		if station == "Upminster":
@@ -450,10 +453,13 @@ class Interpreter:
 
 		# parse string to integer
 		elif station == "Parsons Green":
-			match = re.search("-?\d+", self.Accumulator)
-			station = self.Accumulator[match.end():]
-			self.Accumulator = 0 if not(match) else match.group()
-			self.StationValues[station] = "" if not(match) else station
+			if isinstance(self.Accumulator, str):
+				match = re.search("-?\d+", self.Accumulator)
+				newStationValue = 0 if not(match) else self.Accumulator[match.end():]
+				self.Accumulator = 0 if not(match) else int(match.group())
+				self.StationValues[station] = "" if not(match) else newStationValue
+			else:
+				performDefault = True
 
 		# 7
 		elif station == "Seven Sisters":
@@ -582,11 +588,6 @@ class Interpreter:
 
 		if performDefault:
 			self.swapValues(station)
-
-		# Debug
-		if self._verbose:
-			print ("After:  " + str(self.Accumulator) + " (" + str(self.StationValues[station]) + ")")
-			print ("")
 
 	def swapValues(self, station):
 		"""Swaps the values of the Accumulator and the specified station"""
