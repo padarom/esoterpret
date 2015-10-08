@@ -1,0 +1,10 @@
+{
+	"name": "Mornington Crescent",
+	"baseclass": "MorningtonCrescentInterpreter",
+	"extension": ".mcresc",
+	"author":
+	{
+		"name": "Christopher Mühl",
+		"email": "cmuehl@unitybox.de"
+	}
+}

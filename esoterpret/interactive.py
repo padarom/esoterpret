@@ -6,10 +6,10 @@ class InteractiveCLI:
 	def __init__(self):
 		self._screen = curses.initscr()	
 
-		curses.start_color()	# Working w/ colors
-		curses.noecho()			# Don't echo
-		curses.cbreak()			# Breaks
-		curses.curs_set(False)	# Don't show cursor
+		curses.start_color()
+		curses.noecho()
+		curses.cbreak()
+		curses.curs_set(False)
 
 	def unset(self):
 		curses.nocbreak()

@@ -1,5 +1,3 @@
-#!/usr/local/bin/python
-
 """
 
 Python interpreter for the esoteric language Mornington Crescent
@@ -9,8 +7,9 @@ More information: http://esolangs.org/wiki/Mornington_Crescent
 
 """
 
-import sys, re
+from esoterpret.interpreter.baseclass import Interpreter
 from collections import defaultdict
+import sys, re
 
 # TUBE LINE & STATION DATA
 # Taken from https://gist.github.com/paulcuth/1111303
@@ -295,7 +294,7 @@ for match in _matches:
 		STATIONS[match.group(1)].append(line)
 		LINES.add(line)
 
-class Interpreter:
+class MorningtonCrescentInterpreter(Interpreter):
 	"""
 	Mornington Crescent Interpreter
 	"""
@@ -307,10 +306,9 @@ class Interpreter:
 	StationValues = {}
 
 	Code = []
-	_InstructionPointer = 0
 	_verbose = False
 
-	def __init__(self, code, acc, verbose):
+	def __init__(self, code, acc, verbose = False):
 		"""
 		Initialize a new interpreter.
 
@@ -332,13 +330,14 @@ class Interpreter:
 		for station in STATIONS.keys():
 			self.StationValues[station] = station
 
-		while self._InstructionPointer < len(self.Code):
-			self.move()
+		print(self.Code)
+		while self.InstructionPointer < len(self.Code):
+			self.nextInstruction()
 
-	def move(self):
-		"""Execute the next instruction as specified by _InstructionPointer"""
+	def nextInstruction(self):
+		"""Execute the next instruction as specified by InstructionPointer"""
 
-		code    = self.Code[self._InstructionPointer]
+		code    = self.Code[self.InstructionPointer]
 		pattern = re.compile("^Take (.*) Line to (.*)$")
 
 		match       = pattern.match(code)
@@ -351,7 +350,7 @@ class Interpreter:
 
 			# Debug
 			if self._verbose:
-				print ("[" + str(self._InstructionPointer) + "] " + code)
+				print ("[" + str(self.InstructionPointer) + "] " + code)
 				print ("Before: " + str(self.Accumulator) + " (" + str(self.StationValues[destination]) + ")")
 
 			self.executeStation(destination)
@@ -364,10 +363,10 @@ class Interpreter:
 		else:
 			raise RuntimeError("Stations " + self.DataPointer + " and " + destination + " are not connected through " + line + " Line.")
 
-		self._InstructionPointer += 1
+		self.InstructionPointer += 1
 
 		# RuntimeError if the instruction pointer is bigger than the number of lines
-		if self._InstructionPointer == len(self.Code):
+		if self.InstructionPointer == len(self.Code):
 			raise RuntimeError("You have to end at Mornington Crescent.")
 
 	def areStationsConnected(self, origin, destination, line):
@@ -553,7 +552,7 @@ class Interpreter:
 
 		# continuation
 		elif station == "Temple":
-			self.Jumpstack.append(self._InstructionPointer)
+			self.Jumpstack.append(self.InstructionPointer)
 
 		# if
 		elif station == "Angel":
@@ -561,7 +560,7 @@ class Interpreter:
 				self.DataPointer = "Temple"
 				last = self.Jumpstack.pop() # We don't want to pop it.
 				self.Jumpstack.append(last) # So we store it again.
-				self._InstructionPointer = last
+				self.InstructionPointer = last
 
 		# pop
 		elif station == "Marble Arch":
@@ -592,37 +591,3 @@ class Interpreter:
 	def swapValues(self, station):
 		"""Swaps the values of the Accumulator and the specified station"""
 		self.Accumulator, self.StationValues[station] = self.StationValues[station], self.Accumulator
-
-if __name__ == "__main__":
-	import argparse
-
-	parser = argparse.ArgumentParser(description="""
-	Execute a Mornington Crescent script.
-
-	Executing a script is as easy as:
-		%(prog)s <script file>""",
-	formatter_class=argparse.RawDescriptionHelpFormatter)
-	
-	parser.add_argument("script",
-	                    type=argparse.FileType("r"),
-	                    nargs="?",
-	                    help=".mcresc file to execute")
-
-	# Still not ideal, according to the specification it requires the accumulator to come from stdin.
-	# But it'll do for now.
-	parser.add_argument("-a", "--accumulator", 
-	                   	help="the value to initialize the accumulator to",
-	                   	default="")
-
-	parser.add_argument("-v", "--verbose", 
-	                    help="increase output verbosity",
-	                    action="store_true")
-
-	arguments = parser.parse_args()
-
-	if arguments.script:
-		code = arguments.script.read()
-		arguments.script.close()
-		interpreter = Interpreter(code, arguments.accumulator, arguments.verbose)
-	else:
-		print("You need to provide a path to your program!")
