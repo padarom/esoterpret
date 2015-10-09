@@ -7,7 +7,7 @@ More information: http://esolangs.org/wiki/Mornington_Crescent
 """
 
 from esoterpret.interpreter.baseclass import AbstractInterpreter
-import sys, re
+import re
 
 from modules.morningtoncrescent.defaults import Stations, Lines
 
@@ -47,8 +47,11 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 		for station in Stations.keys():
 			self.StationValues[station] = station
 
-		while self.InstructionPointer < len(self.Code):
-			self.nextInstruction()
+	def hasExecutionFinished(self):
+		if self.InstructionPointer == len(self.Code) and self.DataPointer != "Mornington Crescent":
+			raise RuntimeError("You have to end at Mornington Crescent.")
+
+		return self.InstructionPointer > len(self.Code) or (self.InstructionPointer > 0 and self.DataPointer == "Mornington Crescent")
 
 	def nextInstruction(self):
 		"""Execute the next instruction as specified by InstructionPointer"""
@@ -80,10 +83,6 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 			raise RuntimeError("Stations " + self.DataPointer + " and " + destination + " are not connected through " + line + " Line.")
 
 		self.InstructionPointer += 1
-
-		# RuntimeError if the instruction pointer is bigger than the number of Lines
-		if self.InstructionPointer == len(self.Code):
-			raise RuntimeError("You have to end at Mornington Crescent.")
 
 	def areStationsConnected(self, origin, destination, line):
 		"""
@@ -285,7 +284,6 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 		# output/exit
 		elif station == "Mornington Crescent":
 			print(self.Accumulator)
-			sys.exit()
 
 		else:
 			performDefault = True

@@ -9,3 +9,6 @@ class AbstractInterpreter(metaclass=ABCMeta):
 
 	@abstractmethod
 	def nextInstruction(self): pass
+
+	@abstractmethod
+	def hasExecutionFinished(self): pass
