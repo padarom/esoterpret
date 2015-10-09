@@ -283,7 +283,7 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 
 		# output/exit
 		elif station == "Mornington Crescent":
-			print(self.Accumulator)
+			self.output(self.Accumulator)
 
 		else:
 			performDefault = True
