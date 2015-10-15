@@ -10,6 +10,7 @@ from esoterpret.interpreter.baseclass import AbstractInterpreter
 import re
 
 from modules.morningtoncrescent.defaults import Stations, Lines
+from math import floor
 
 class MorningtonCrescentInterpreter(AbstractInterpreter):
 	"""
@@ -69,8 +70,8 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 
 			# Debug
 			if self._verbose:
-				pa = "%s" % self.Accumulator if isinstance(self.Accumulator, str) else str(self.Accumulator)
-				ps = "%s" % self.StationValues[destination] if isinstance(self.StationValues[destination], str) else str(self.StationValues[destination])
+				pa = "\"%s\"" % self.Accumulator if isinstance(self.Accumulator, str) else str(self.Accumulator)
+				ps = "\"%s\"" % self.StationValues[destination] if isinstance(self.StationValues[destination], str) else str(self.StationValues[destination])
 				print ("[" + str(self.InstructionPointer) + "] " + code)
 				print ("Before: %s (%s)" % (pa, ps))
 
@@ -78,8 +79,8 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 
 			# Debug
 			if self._verbose:
-				pa = "%s" % self.Accumulator if isinstance(self.Accumulator, str) else str(self.Accumulator)
-				ps = "%s" % self.StationValues[destination] if isinstance(self.StationValues[destination], str) else str(self.StationValues[destination])
+				pa = "\"%s\"" % self.Accumulator if isinstance(self.Accumulator, str) else str(self.Accumulator)
+				ps = "\"%s\"" % self.StationValues[destination] if isinstance(self.StationValues[destination], str) else str(self.StationValues[destination])
 				print ("After:  %s (%s)" % (pa, ps))
 				print ("")
 
@@ -132,7 +133,7 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 		
 		# integer division
 		elif station == "Cannon Street":
-			action = lambda a, b : "" if b == 0 else int(round(b / a))
+			action = lambda a, b : "" if b == 0 else int(floor(b / a))
 
 		# remainder
 		elif station == "Preston Road":
