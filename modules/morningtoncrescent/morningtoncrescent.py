@@ -35,7 +35,7 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 			acc -- initialization value for accumulator
 		"""
 		for line in iter(code.splitlines()):
-			pattern = re.compile("^Take (.*) Line to (.*)$")
+			pattern = re.compile("^Take (.*) Line to ([^#]*?)[\t ]*(#.*)?$")
 
 			# Add only valid Lines to the code list, ignoring the rest.
 			if pattern.match(line):
@@ -58,7 +58,7 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 		"""Execute the next instruction as specified by InstructionPointer"""
 
 		code    = self.Code[self.InstructionPointer]
-		pattern = re.compile("^Take (.*) Line to (.*)$")
+		pattern = re.compile("^Take (.*) Line to ([^#]*?)[\t ]*(#.*)?$")
 
 		match       = pattern.match(code)
 		line        = match.group(1)
