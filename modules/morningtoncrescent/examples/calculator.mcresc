@@ -1,211 +1,200 @@
-Take Northern Line to Bank
+Take Northern Line to Bank                            # Store instruction (e.g. "3+5") in Bank
 Take District Line to Hammersmith
-Take District Line to Parsons Green
+Take District Line to Parsons Green                   # Parse left operand (3), store the rest in Parsons Green ("+5")
 Take District Line to Earl's Court
 Take District Line to Earl's Court
-Take Piccadilly Line to Hounslow West
+Take Piccadilly Line to Hounslow West                 # Store left operand in Hounslow West
 Take Piccadilly Line to Green Park
-Take Victoria Line to Seven Sisters
+Take Victoria Line to Seven Sisters                   # Get a 7 from Seven Sisters
 Take Victoria Line to Victoria
 Take Circle Line to Victoria
-Take District Line to Parsons Green
-Take District Line to Bank
+Take District Line to Parsons Green                   # Swap 7 with "+5" from Parsons Green
+Take District Line to Bank                            # Store "+5" in Bank
 Take District Line to Hammersmith
-Take District Line to Parsons Green
+Take District Line to Parsons Green                   # Parse "+5" to 5
 Take District Line to Earl's Court
 Take District Line to Earl's Court
-Take Piccadilly Line to Hounslow East
-Take Piccadilly Line to Hammersmith
+Take Piccadilly Line to Hounslow East                 # Store right operand in Hounslow East
+Take Piccadilly Line to Hammersmith                   # Get "+5" again
 Take District Line to Embankment
 Take District Line to Embankment
 Take Bakerloo Line to Charing Cross
-Take Bakerloo Line to Charing Cross
+Take Bakerloo Line to Charing Cross                   # Get the codepoint of "+" (43)
 Take Bakerloo Line to Piccadilly Circus
 Take Piccadilly Line to Piccadilly Circus
-Take Piccadilly Line to Osterley
-Take Piccadilly Line to Hounslow West
+Take Piccadilly Line to Osterley                      # Store 43 in Osterley
+Take Piccadilly Line to Hounslow West                 # Get the left operand (3)
 Take Piccadilly Line to Holborn
 Take Central Line to Holborn
-Take Central Line to Bank
+Take Central Line to Bank                             # Store left operand (3) in Bank
 Take District Line to Hammersmith
-Take Piccadilly Line to Hounslow West
-Take Piccadilly Line to Hammersmith
-Take District Line to Cannon Street
+Take District Line to Cannon Street                   # Put into Cannon Street (Division)
 Take District Line to Hammersmith
-Take District Line to Upminster
+Take District Line to Upminster                       # Put into Upminster (Addition & Subtraction)
 Take District Line to Hammersmith
 Take Hammersmith & City Line to Baker Street
 Take Hammersmith & City Line to Baker Street
-Take Metropolitan Line to Chalfont & Latimer
+Take Metropolitan Line to Chalfont & Latimer          # Put into Chalfont & Latimer (Multiplication)
 Take Metropolitan Line to King's Cross St. Pancras
 Take Metropolitan Line to King's Cross St. Pancras
-Take Piccadilly Line to Hounslow East
+Take Piccadilly Line to Hounslow East                 # Get the right operand (5)
 Take Piccadilly Line to Holborn
 Take Central Line to Holborn
-Take Central Line to Bank
+Take Central Line to Bank                             # Store the right operand (5) in Bank
 Take District Line to Hammersmith
-Take Piccadilly Line to Hounslow West
-Take Piccadilly Line to Hammersmith
-Take District Line to Upminster
+Take District Line to Upminster                       # Perform addition (3+5)
 Take District Line to Ealing Broadway
 Take District Line to Ealing Broadway
-Take Central Line to Redbridge
+Take Central Line to Redbridge                        # Store addition result (8) in Redbrige
 Take Central Line to Ealing Broadway
 Take Central Line to Ealing Broadway
 Take District Line to Hammersmith
-Take District Line to Cannon Street
+Take District Line to Cannon Street                   # Perform division (3/5)
 Take District Line to Ealing Broadway
 Take District Line to Ealing Broadway
-Take Central Line to Fairlop
+Take Central Line to Fairlop                          # Store division result (0) in Fairlop
 Take Central Line to Ealing Broadway
 Take Central Line to Ealing Broadway
 Take District Line to Hammersmith
 Take Hammersmith & City Line to Baker Street
 Take Bakerloo Line to Baker Street
-Take Metropolitan Line to Chalfont & Latimer
+Take Metropolitan Line to Chalfont & Latimer          # Perform multiplication (3*5)
 Take Metropolitan Line to Liverpool Street
 Take Central Line to Liverpool Street
-Take Central Line to Wanstead
-Take Central Line to Redbridge
-Take Central Line to Bank
+Take Central Line to Wanstead                         # Store multiplication result (15) in Wanstead
+Take Central Line to Redbridge                        # Get addition result
+Take Central Line to Bank                             # Store addition result in Bank
 Take Central Line to Ealing Broadway
 Take Central Line to Ealing Broadway
 Take District Line to Hammersmith
 Take District Line to Ealing Broadway
 Take District Line to Ealing Broadway
-Take Central Line to Redbridge
+Take Central Line to Redbridge                        # Store addition result in Redbridge
 Take Central Line to Ealing Broadway
 Take Central Line to Ealing Broadway
 Take District Line to Hammersmith
 Take District Line to Ealing Broadway
 Take District Line to Ealing Broadway
-Take Central Line to Newbury Park
+Take Central Line to Newbury Park                     # Store addition result in Newbury Park
 Take Central Line to Oxford Circus
-Take Victoria Line to Seven Sisters
+Take Victoria Line to Seven Sisters                   # Get a 7 from Seven Sisters
 Take Victoria Line to Victoria
 Take Victoria Line to Victoria
-Take Circle Line to Cannon Street
+Take Circle Line to Cannon Street                     # Put into Cannon Street for division
 Take Circle Line to Victoria
-Take Victoria Line to Seven Sisters
+Take Victoria Line to Seven Sisters                   # Get another 7 from Seven Sisters
 Take Victoria Line to Victoria
 Take Victoria Line to Victoria
-Take Circle Line to Cannon Street
-Take District Line to Bank
+Take Circle Line to Cannon Street                     # Divide 7/7 -> 1
+Take District Line to Bank                            # Store 1 in Bank
 Take District Line to Hammersmith
-# 1 is in Heathrow Terminal 4
-Take Piccadilly Line to Heathrow Terminal 4
+Take Piccadilly Line to Heathrow Terminal 4           # Get "Heathrow Terminal 4" (value of station is now 1)
 Take Piccadilly Line to South Kensington
 Take Piccadilly Line to South Kensington
-Take District Line to Mile End
+Take District Line to Mile End                        # Store in Mile End
+Take District Line to Hammersmith                     # Get stored 1 from Hammersmith
+Take District Line to Mile End                        # Get right substring with offset 1 ("Heathrow Terminal 4" -> "4")
+Take Central Line to Bank                             # Store "4" in Bank
 Take District Line to Hammersmith
-Take District Line to Mile End
-Take Central Line to Bank
+Take District Line to Parsons Green                   # Parse "4" to 4
+Take District Line to Mile End                        # Bring 4 to Mile End
 Take District Line to Hammersmith
-Take District Line to Parsons Green
-Take District Line to Mile End
-Take District Line to Hammersmith
-Take Piccadilly Line to Heathrow Terminals 1, 2, 3
-Take Piccadilly Line to South Kensington
-Take District Line to South Kensington
-Take District Line to Mile End
-Take District Line to Gunnersbury
-Take District Line to Hammersmith
-Take Piccadilly Line to Heathrow Terminal 4
-Take Piccadilly Line to Earl's Court
-Take Piccadilly Line to Earl's Court
-Take District Line to Gunnersbury
-Take District Line to Acton Town
-Take Piccadilly Line to Heathrow Terminal 4
-Take Piccadilly Line to Acton Town
-Take Piccadilly Line to Acton Town
-Take District Line to Paddington
-Take District Line to Acton Town
-Take District Line to Paddington
-Take District Line to Bromley-by-Bow
-Take District Line to Barons Court
-Take District Line to Hammersmith
-Take District Line to Parsons Green
-Take District Line to Mile End
-Take District Line to Barons Court
-Take District Line to Mile End
-Take District Line to Gunnersbury
-Take District Line to Bank
-Take District Line to Hammersmith
-Take District Line to Paddington
-Take District Line to Bromley-by-Bow
-Take District Line to Paddington
-Take District Line to Parsons Green
-Take District Line to Upminster
-Take District Line to Hammersmith
-Take Piccadilly Line to Osterley
+Take Piccadilly Line to Heathrow Terminals 1, 2, 3    # Get "Heathrow Terminals 1, 2, 3"
 Take Piccadilly Line to South Kensington
 Take District Line to South Kensington
-Take District Line to Upminster
-Take District Line to Upminster
+Take District Line to Mile End                        # Get right substring with offset 4 ("Heathrow Terminals 1, 2, 3" -> "2, 3")
+Take District Line to Gunnersbury                     # Put "2, 3" into Gunnersbury
+Take District Line to Hammersmith
+Take Piccadilly Line to Heathrow Terminal 4           # Get 1 back from Heathrow Terminal 4
+Take Piccadilly Line to Earl's Court
+Take Piccadilly Line to Earl's Court
+Take District Line to Gunnersbury                     # Get left substring with offset 1 ("2, 3" -> "2", station value is now 1)
+Take District Line to Acton Town                      # Put "2" into Acton Town
+Take District Line to Hammersmith                     # Get "4" from Hammersmith
+Take District Line to Paddington                      # Put "4" into Paddington
+Take District Line to Acton Town                      # Get "2" from Acton Town
+Take District Line to Paddington                      # Pad "4" with "2" -> "42"
+Take District Line to Bromley-by-Bow                  # Get "Bromley-by-Bow"
+Take District Line to Barons Court
+Take District Line to Hammersmith                     # Get "4" from Hammersmith
+Take District Line to Parsons Green                   # Parse "4" to 4
+Take District Line to Mile End                        # Put 4 into Mile End
+Take District Line to Barons Court
+Take District Line to Mile End                        # Get right substring with offset 4 ("Bromley-by-Bow" -> "-Bow")
+Take District Line to Gunnersbury                     # Get left substring with offset 1 ("-Bow" -> "-")
+Take District Line to Bank                            # Store "-" in Bank
+Take District Line to Hammersmith
+Take District Line to Paddington                      # Put "-" into Paddington
+Take District Line to Bromley-by-Bow                  # Get "42" back from Bromley-by-Bow
+Take District Line to Paddington                      # Pad "42" and "-" to "-42"
+Take District Line to Parsons Green                   # Parse "-42" to -42
+Take District Line to Upminster                       # Put -42 into Upminster
+Take District Line to Hammersmith
+Take Piccadilly Line to Osterley                      # Get codepoint of operation (43)
+Take Piccadilly Line to South Kensington
+Take District Line to South Kensington
+Take District Line to Upminster                       # Perform addition 43 + (-42) = 1
+Take District Line to Upminster                       # Store 1 in Upminster
 Take District Line to Victoria
-Take Victoria Line to Seven Sisters
+Take Victoria Line to Seven Sisters                   # Get 7 from Seven Sisters
 Take Victoria Line to Victoria
 Take District Line to Victoria
-Take District Line to Cannon Street
+Take District Line to Cannon Street                   # Put 7 in Cannon Street
 Take District Line to Victoria
-Take Victoria Line to Seven Sisters
+Take Victoria Line to Seven Sisters                   # Get 7 from Seven Sisters
 Take Victoria Line to Victoria
 Take District Line to Victoria
-Take District Line to Cannon Street
-Take District Line to Upminster
+Take District Line to Cannon Street                   # Perform division 7/7 = 1
+Take District Line to Upminster                       # Add 1 to stored value 1 (1+1 = 2)
 Take District Line to Ealing Broadway
 Take District Line to Ealing Broadway
-Take Central Line to Leyton
-Take Central Line to Oxford Circus
-Take Victoria Line to Victoria
+Take Central Line to Leyton                           # Put 2 into Leyton. This is the number of times we need to shift our pre-calculated values around.
+Take Central Line to Oxford Circus                    # The correct result will be in Fairlop after shifting.
+Take Victoria Line to Victoria                        # Get 1 from Victoria
+Take Circle Line to Notting Hill Gate                 # Perform bitwise NOT for 1 (-2)
 Take Circle Line to Notting Hill Gate
-Take Circle Line to Notting Hill Gate
-Take District Line to Upminster
+Take District Line to Upminster                       # Put -2 into Upminster
 Take District Line to Victoria
-Take Victoria Line to Seven Sisters
+Take Victoria Line to Seven Sisters                   # Get 7 from Seven Sisters
 Take Victoria Line to Victoria
 Take Victoria Line to Victoria
-Take District Line to Cannon Street
+Take District Line to Cannon Street                   # Put 7 into Cannon Street
 Take District Line to Victoria
-Take Victoria Line to Seven Sisters
+Take Victoria Line to Seven Sisters                   # Get 7 from Seven Sisters
 Take Victoria Line to Victoria
 Take Victoria Line to Victoria
-Take District Line to Cannon Street
-Take District Line to Upminster
-Take District Line to Upminster Bridge
+Take District Line to Cannon Street                   # Perform division 7/7 = 1
+Take District Line to Upminster                       # Perform addition -2 + 1 = -1
+Take District Line to Upminster Bridge                # Store -1 in Upminster Bridge
 Take District Line to Ealing Broadway
-Take Central Line to Leyton
-Take Central Line to Bank
-Take District Line to Hammersmith
-Take District Line to Bank
-Take Central Line to Leyton
-Take Central Line to Ealing Broadway
-Take District Line to Temple
-Take District Line to Hammersmith
-Take District Line to Upminster
-Take District Line to Upminster Bridge
-Take District Line to Upminster
-Take District Line to Bank
-Take District Line to Hornchurch
-Take District Line to Upminster
-Take District Line to Upminster Bridge
-Take District Line to Upminster
-Take District Line to Hornchurch
+Take Central Line to Leyton                           # Get 2 from Leyton
+Take Central Line to Bank                             # Store 2 in Bank
+Take District Line to Temple                          # Start loop for shifting
+Take District Line to Hammersmith                     # Get 2 from Hammersmith
+Take District Line to Upminster                       # Store 2 in Upminster
+Take District Line to Upminster Bridge                # Get -1 from Upminster Bridge
+Take District Line to Upminster                       # Calculate 2 + (-1) = 1
+Take District Line to Bank                            # Store 1 in Bank
+Take District Line to Hornchurch                      # Get "Hornchurch"
+Take District Line to Upminster                       # Put "Hornchurch" into Upminster and get -1
+Take District Line to Upminster Bridge                # Store -1 in Upminster Bridge
+Take District Line to Upminster                       # Get "Hornchurch" from Upminster
+Take District Line to Hornchurch                      # Store "Hornchurch" in Hornchurch
 Take District Line to Ealing Broadway
-Take Central Line to Wanstead
-Take Central Line to Fairlop
-Take Central Line to Barkingside
-Take Central Line to Newbury Park
-Take Central Line to Gants Hill
-Take Central Line to Redbridge
+Take Central Line to Wanstead                         # Shift Wanstead to Fairlop          (15)
+Take Central Line to Fairlop                          # Shift Fairlop to Barkingside       (0)
+Take Central Line to Barkingside                      # Shift Barkingside to Newbury Park  ("Barkingside")
+Take Central Line to Newbury Park                     # Shift Newbury Park to Gants Hill   (8)
+Take Central Line to Gants Hill                       # Shift Gants Hill to Redbridge      ("Gants Hill")
+Take Central Line to Redbridge                        # Shift Redbridge to Wanstead        (8)
 Take Central Line to Wanstead
 Take Central Line to Ealing Broadway
-Take District Line to Hammersmith
+Take District Line to Hammersmith                     # Get 1 from Hammersmith
 Take District Line to Embankment
 Take District Line to Embankment
-Take Northern Line to Angel
+Take Northern Line to Angel                           # If Accumulator is 0, continue, otherwise jump back to Temple. This lets us shift multiple times
 Take Northern Line to Tottenham Court Road
-Take Central Line to Fairlop
+Take Central Line to Fairlop                          # Get calculation result from Fairlop
 Take Central Line to Tottenham Court Road
 Take Central Line to Tottenham Court Road
-Take Northern Line to Mornington Crescent
+Take Northern Line to Mornington Crescent             # Output and terminate program
