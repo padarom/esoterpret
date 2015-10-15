@@ -69,14 +69,18 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 
 			# Debug
 			if self._verbose:
+				pa = "%s" % self.Accumulator if isinstance(self.Accumulator, str) else str(self.Accumulator)
+				ps = "%s" % self.StationValues[destination] if isinstance(self.StationValues[destination], str) else str(self.StationValues[destination])
 				print ("[" + str(self.InstructionPointer) + "] " + code)
-				print ("Before: " + str(self.Accumulator) + " (" + str(self.StationValues[destination]) + ")")
+				print ("Before: %s (%s)" % (pa, ps))
 
 			self.executeStation(destination)
 
 			# Debug
 			if self._verbose:
-				print ("After:  " + str(self.Accumulator) + " (" + str(self.StationValues[destination]) + ")")
+				pa = "%s" % self.Accumulator if isinstance(self.Accumulator, str) else str(self.Accumulator)
+				ps = "%s" % self.StationValues[destination] if isinstance(self.StationValues[destination], str) else str(self.StationValues[destination])
+				print ("After:  %s (%s)" % (pa, ps))
 				print ("")
 
 		else:
@@ -161,7 +165,7 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 		# bitwise NOT
 		elif station == "Notting Hill Gate":
 			if isinstance(self.StationValues[station], int):
-				action = lambda a, b : ~b
+				(self.Accumulator, self.StationValues[station]) = (~self.StationValues[station], self.Accumulator)
 			else:
 				performDefault = True
 
