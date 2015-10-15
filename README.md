@@ -12,14 +12,19 @@ _Esoterpret is still under active development and by no means finished. These fe
   - Test every code, verify its validity (with your test suit) and sort by lowest byte count
 
 ## Currently Supported Languages
-- [Mornington Crescent][Mornington Crescent] (Subject to testing)
+- [Mornington Crescent][Mornington Crescent]
 
 You're free to add your own interpreters if you want to and file a pull request for them. Our contribution guide will help get you started! (_Coming Soon!_)
 
 We're also planning to add the ability to incorporate external interpreters/compilers. They will not necessarily contain the complete feature set offered by Esoterpret, but can still be run by it.
 
+## Requirements
+Esoterpret requires Python 3. 
+
+It is currently using the native Python library Curses, which is not shipped with the Windows installation of Python. For this reason, it can't currently be used on a Windows PC. I'm currently looking into transferring the project over to PyQt so it can use a graphical user interface instead of a text-based command-line one. It will still be possible to use the interpreters using the command line, but without debugging.
+
 ## How to use
-Esoterpret requires Python 3. Just download the repository (or clone it) and run `esoterpret.py`:
+Just download the repository (or clone it) and run `esoterpret.py`:
 ```sh
 $ python esoterpret.py --help
 ```
