@@ -8,9 +8,8 @@ Repository: https://github.com/Padarom/Esoterpret
 
 """
 
-import argparse, os, sys, imp
+import argparse, os, sys
 
-import esoterpret.interactive as interactive
 from esoterpret.language import Language
 from esoterpret.terminal import Color
 
@@ -51,8 +50,8 @@ if __name__ == "__main__":
 	                    nargs="?",
 	                    help="script file to execute")
 
-	parser.add_argument("-i", "--interactive", 
-	                    help="open the interactive CLI interpreter/debugger",
+	parser.add_argument("--nogui", 
+	                    help="don't open the gui",
 	                    action="store_true")
 
 	parser.add_argument("-s", "--stdin",
@@ -67,15 +66,10 @@ if __name__ == "__main__":
 
 	arguments = parser.parse_args()
 
-	if arguments.interactive:
-		cli = interactive.InteractiveCLI()
-		cli.menu()
-		cli.unset()
-
-	elif arguments.list_languages:
+	if arguments.list_languages:
 		listLanguages()
 
-	elif arguments.language is not None:
+	elif arguments.language is not None and arguments.nogui:
 		if arguments.script:
 			code = arguments.script.read()
 			initialization = ""
@@ -83,3 +77,6 @@ if __name__ == "__main__":
 				initialization = arguments.stdin
 			arguments.script.close()
 			useLanguage(arguments.language, code, initialization)
+
+	else:
+		pass
