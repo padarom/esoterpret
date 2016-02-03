@@ -1,3 +1,6 @@
+# Written by Christopher Mühl
+# Example Input "8+5" produces output "13"
+
 Take Northern Line to Bank                            # Store instruction (e.g. "3+5") in Bank
 Take District Line to Hammersmith
 Take District Line to Parsons Green                   # Parse left operand (3), store the rest in Parsons Green ("+5")
