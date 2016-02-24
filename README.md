@@ -1,4 +1,4 @@
-# Esoterpret
+# ![Esoterpret](http://i.imgur.com/nNAfkuz.png)
 Esoterpret is an extensible esoteric programming language interpreter written in Python. It features a modular setup, debugging features and more. _Contribution is well appreciated!_
 
 I'm currently looking into using PyQt with the project so it can use a graphical user interface instead of the previously planned text-based command-line one. It will still be possible to use the interpreters using the command line, but without the debugging features.
