@@ -6,8 +6,6 @@ More information: http://esolangs.org/wiki/Brainfuck
 
 """
 
-def penis():
-	pass
 
 from esoterpret.interpreter.baseclass import AbstractInterpreter
 from collections import defaultdict
