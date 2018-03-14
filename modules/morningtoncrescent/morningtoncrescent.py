@@ -133,11 +133,11 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 		
 		# integer division
 		elif station == "Cannon Street":
-			action = lambda a, b : "" if b == 0 else int(floor(b / a))
+			action = lambda a, b : "" if a == 0 else b // a
 
 		# remainder
 		elif station == "Preston Road":
-			action = lambda a, b : "" if b == 0 else b % a
+			action = lambda a, b : "" if a == 0 else b % a
 		
 		# max
 		elif station == "Bounds Green":
