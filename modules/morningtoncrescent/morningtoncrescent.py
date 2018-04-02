@@ -70,18 +70,14 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 
 			# Debug
 			if self._verbose:
-				pa = "\"%s\"" % self.Accumulator if isinstance(self.Accumulator, str) else str(self.Accumulator)
-				ps = "\"%s\"" % self.StationValues[destination] if isinstance(self.StationValues[destination], str) else str(self.StationValues[destination])
 				print ("[" + str(self.InstructionPointer) + "] " + code)
-				print ("Before: %s (%s)" % (pa, ps))
+				print ("Before: %s (%s)" % (repr(self.Accumulator), repr(self.StationValues[destination])))
 
 			self.executeStation(destination)
 
 			# Debug
 			if self._verbose:
-				pa = "\"%s\"" % self.Accumulator if isinstance(self.Accumulator, str) else str(self.Accumulator)
-				ps = "\"%s\"" % self.StationValues[destination] if isinstance(self.StationValues[destination], str) else str(self.StationValues[destination])
-				print ("After:  %s (%s)" % (pa, ps))
+				print ("After:  %s (%s)" % (repr(self.Accumulator), repr(self.StationValues[self.DataPointer])))
 				print ("")
 
 		else:
