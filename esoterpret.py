@@ -37,8 +37,6 @@ def useLanguage(language, code, initialization):
 		print("No Interpreter found for %s." % language)
 	except FileNotFoundError:
 		print("Config file for %s could not be loaded." % language)
-	except Exception as e: # Everything else
-		print("[%s] %s" % (type(e).__name__, str(e)))
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="""
