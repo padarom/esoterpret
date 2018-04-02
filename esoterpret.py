@@ -25,10 +25,10 @@ def listLanguages():
 			except:
 				pass
 
-def useLanguage(language, code, initialization):
+def useLanguage(language, code, initialization, verbose):
 	try:
 		lang = Language(language)
-		interpreter = lang.Class(code, initialization)
+		interpreter = lang.Class(code, initialization, verbose=verbose)
 
 		while not(interpreter.hasExecutionFinished()):
 			interpreter.nextInstruction()
@@ -68,6 +68,10 @@ if __name__ == "__main__":
 	                    help="list available languages",
 	                    action="store_true")
 
+	parser.add_argument("-v", "--verbose",
+			    help="print debugging information after every instruction executed",
+			    action="store_true")
+
 	arguments = parser.parse_args()
 
 	if arguments.list_languages:
@@ -80,7 +84,7 @@ if __name__ == "__main__":
 			if arguments.stdin:
 				initialization = arguments.stdin
 			arguments.script.close()
-			useLanguage(arguments.language, code, initialization)
+			useLanguage(arguments.language, code, initialization, arguments.verbose)
 
 	else:
 		raise hell # unimplemented
