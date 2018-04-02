@@ -157,12 +157,15 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 
 		# square
 		elif station == "Russell Square":
-			action = lambda a, b : b * b
+			if isinstance(self.StationValues[station], int):
+				self.Accumulator, self.StationValues[station] = self.StationValues[station] ** 2, self.Accumulator
+			else:
+				performDefault = True
 
 		# bitwise NOT
 		elif station == "Notting Hill Gate":
 			if isinstance(self.StationValues[station], int):
-				(self.Accumulator, self.StationValues[station]) = (~self.StationValues[station], self.Accumulator)
+				self.Accumulator, self.StationValues[station] = ~self.StationValues[station], self.Accumulator
 			else:
 				performDefault = True
 
