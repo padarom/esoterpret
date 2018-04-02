@@ -50,8 +50,8 @@ if __name__ == "__main__":
 	                    nargs="?",
 	                    help="script file to execute")
 
-	parser.add_argument("--nogui", 
-	                    help="don't open the gui",
+	parser.add_argument("--gui", 
+	                    help="open the gui [WIP]",
 	                    action="store_true")
 
 	parser.add_argument("-s", "--stdin",
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 	if arguments.list_languages:
 		listLanguages()
 
-	elif arguments.language is not None and arguments.nogui:
+	elif arguments.language is not None and not arguments.gui:
 		if arguments.script:
 			code = arguments.script.read()
 			initialization = ""
@@ -79,4 +79,4 @@ if __name__ == "__main__":
 			useLanguage(arguments.language, code, initialization)
 
 	else:
-		pass
+		raise hell # unimplemented
