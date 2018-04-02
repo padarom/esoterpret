@@ -256,6 +256,15 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 		elif station == "Hounslow Central":
 			acc = self.Accumulator
 			if isinstance(self.StationValues[station], str):
+				self.Accumulator = self.StationValues[station].lower()
+				self.StationValues[station] = acc
+			else:
+				performDefault = True
+
+		# reverse string
+		elif station == "Turnpike Lane":
+			acc = self.Accumulator
+			if isinstance(self.StationValues[station], str):
 				self.Accumulator = self.StationValues[station][::-1]
 			else:
 				performDefault = True
