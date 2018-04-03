@@ -42,7 +42,7 @@ def useLanguage(language, code, initialization):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="""
-	Esoterpret, interpreter and debugger for esoteric programming languages""", 
+	Esoterpret, interpreter and debugger for esoteric programming languages""",
 		formatter_class=argparse.RawDescriptionHelpFormatter)
 
 	parser.add_argument("script",
@@ -50,17 +50,21 @@ if __name__ == "__main__":
 	                    nargs="?",
 	                    help="script file to execute")
 
-	parser.add_argument("--gui", 
+	parser.add_argument("--gui",
 	                    help="open the gui [WIP]",
+	                    action="store_true")
+
+	parser.add_argument("--nogui",
+	                    help="compatibility mode (deprecated)",
 	                    action="store_true")
 
 	parser.add_argument("-s", "--stdin",
 	                    help="stdin values")
 
-	parser.add_argument("-l", "--language", 
+	parser.add_argument("-l", "--language",
 	                    help="the language you want to execute")
 
-	parser.add_argument("--list-languages", 
+	parser.add_argument("--list-languages",
 	                    help="list available languages",
 	                    action="store_true")
 

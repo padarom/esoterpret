@@ -36,9 +36,8 @@ $ python esoterpret.py --list-languages
 
 To run a program, you need to specify the language and the path to the scriptfile:
 ```sh
-$ python esoterpret.py --nogui -l morningtoncrescent modules/morningtoncrescent/examples/hello-world.mcresc
+$ python esoterpret.py -l morningtoncrescent modules/morningtoncrescent/examples/hello-world.mcresc
 Hello, World!
 ```
-__The option `--nogui` is currently important, as the code will not be executed otherwise__
 
 [Mornington Crescent]: http://esolangs.org/wiki/Mornington_Crescent
