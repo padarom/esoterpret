@@ -148,7 +148,7 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 			action = lambda a, b : a & b
 
 		# bitwise Shift-Right
-		elif station == "Holland Park":
+		elif station == "Turnham Green":
 			action = lambda a, b : b if a == 0 else b >> a
 
 		# bitwise Shift-Left
