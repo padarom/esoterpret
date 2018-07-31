@@ -8,7 +8,7 @@ Repository: https://github.com/Padarom/Esoterpret
 
 """
 
-import argparse, os, sys
+import argparse, os, sys, inspect
 
 from esoterpret.language import Language
 from esoterpret.terminal import Color
@@ -25,18 +25,50 @@ def listLanguages():
 			except:
 				pass
 
-def useLanguage(language, code, initialization, verbose):
+def useLanguage(language, code, initialization, extra_args):
 	try:
 		lang = Language(language)
-		interpreter = lang.Class(code, initialization, verbose=verbose)
-
+		extrakws, extrapos = parseExtra(extra_args, lang, language)
+		interpreter = lang.Class(code, initialization,
+					 *extrapos, **extrakws)
 		while not(interpreter.hasExecutionFinished()):
 			interpreter.nextInstruction()
-
 	except ImportError:
 		print("No Interpreter found for %s." % language)
 	except FileNotFoundError:
 		print("Config file for %s could not be loaded." % language)
+def parseExtra(extra, langc, langname):
+	sig = inspect.signature(langc.Class.__init__)
+	Parameter = inspect.Parameter
+	parser = argparse.ArgumentParser(description="""
+	Esoterpret, interpreter and debugger for esoteric programming languages""" ,
+	prog='esoterpret -l %s' %langname, add_help=False)
+	skip_params = 3 # ignore the required arguments of "self", "code", "stdin"
+	for param in sig.parameters.values():
+		if skip_params and param.kind == Parameter.POSITIONAL_OR_KEYWORD:
+			skip_params -= 1
+		elif param.kind == Parameter.VAR_KEYWORD:
+			# We don't know how to handle these
+			continue
+		elif param.kind == Parameter.VAR_POSITIONAL:
+			parser.add_argument(param.name, nargs="*",dest="__VARARGS")
+		else:
+			default = param.default
+			action = "store"
+			required = False
+			if default == Parameter.empty:
+				required = True
+			elif type(default) == bool:
+				if default:
+					action = "store_false"
+				else:
+					action = "store_true"
+			parser.add_argument("--"+param.name,"-" + param.name[0],
+					    action=action,default=default,
+					    required=required)
+	ns = parser.parse_args(extra)
+	kwargs = ns.__dict__
+	return kwargs, kwargs.pop("__VARARGS", [])
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="""
@@ -47,7 +79,6 @@ if __name__ == "__main__":
 	                    type=argparse.FileType("r"),
 	                    nargs="?",
 	                    help="script file to execute")
-
 	parser.add_argument("--gui",
 	                    help="open the gui [WIP]",
 	                    action="store_true")
@@ -66,13 +97,11 @@ if __name__ == "__main__":
 	                    help="list available languages",
 	                    action="store_true")
 
-	parser.add_argument("-v", "--verbose",
-			    help="print debugging information after every instruction executed",
-			    action="store_true")
-
-	arguments = parser.parse_args()
+	arguments, extra = parser.parse_known_args()
 
 	if arguments.list_languages:
+		if extra:
+			parser.error('unrecognized arguments: %s' % ' '.join(extra))
 		listLanguages()
 
 	elif arguments.language is not None and not arguments.gui:
@@ -82,7 +111,7 @@ if __name__ == "__main__":
 			if arguments.stdin:
 				initialization = arguments.stdin
 			arguments.script.close()
-			useLanguage(arguments.language, code, initialization, arguments.verbose)
+			useLanguage(arguments.language, code, initialization, extra)
 
 	else:
 		raise hell # unimplemented
