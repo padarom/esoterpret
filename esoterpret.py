@@ -63,8 +63,10 @@ def parseExtra(extra, langc, langname):
 					action = "store_false"
 				else:
 					action = "store_true"
-			parser.add_argument("--"+param.name,"-" + param.name[0],
-					    action=action,default=default,
+			parser.add_argument("--" + param.name,
+					    "-" + param.name[0],
+					    action=action,
+					    default=default,
 					    required=required)
 	ns = parser.parse_args(extra)
 	kwargs = ns.__dict__
