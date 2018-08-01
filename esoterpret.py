@@ -75,8 +75,8 @@ if __name__ == "__main__":
 	arguments = parser.parse_args()
 
 	if arguments.list_languages:
-                if arguments.script or arguments.stdin or arguments.verbose:
-                        parser.error("extra arguments given with --list-languages")
+		if arguments.script or arguments.stdin or arguments.verbose:
+			parser.error("extra arguments given with --list-languages")
 		listLanguages()
 	else:
 		if arguments.script:
@@ -87,4 +87,4 @@ if __name__ == "__main__":
 			arguments.script.close()
 			useLanguage(arguments.language, code, initialization, arguments.verbose)
 		else:
-                        parser.error("no file to execute specified")
+			parser.error("no file to execute specified")
