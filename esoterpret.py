@@ -74,7 +74,9 @@ if __name__ == "__main__":
 
 	arguments = parser.parse_args()
 
-	if arguments.list_languages:
+	if arguments.gui:
+		parser.error("GUI not currently implemented")
+	elif arguments.list_languages:
 		if arguments.script or arguments.stdin or arguments.verbose:
 			parser.error("extra arguments given with --list-languages")
 		listLanguages()
