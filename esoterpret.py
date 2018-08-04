@@ -81,9 +81,6 @@ if __name__ == "__main__":
 	                    type=argparse.FileType("r"),
 	                    nargs="?",
 	                    help="script file to execute")
-	parser.add_argument("--gui",
-	                    help="open the gui [WIP]",
-	                    action="store_true")
 
 	parser.add_argument("--nogui",
 	                    help="compatibility mode (deprecated)",
@@ -92,21 +89,28 @@ if __name__ == "__main__":
 	parser.add_argument("-s", "--stdin",
 	                    help="stdin values")
 
-	parser.add_argument("-l", "--language",
+	exclusive = parser.add_mutually_exclusive_group(required=True)
+
+	exclusive.add_argument("--list-languages",
+	                    help="list available languages",
+	                    action="store_true")
+	
+	exclusive.add_argument("-l", "--language",
 	                    help="the language you want to execute")
 
-	parser.add_argument("--list-languages",
-	                    help="list available languages",
+	exclusive.add_argument("--gui",
+	                    help="open the gui [WIP]",
 	                    action="store_true")
 
 	arguments, extra = parser.parse_known_args()
-
-	if arguments.list_languages:
-		if extra:
-			parser.error('unrecognized arguments: %s' % ' '.join(extra))
+	
+	if arguments.gui:
+		parser.error("GUI not currently implemented")
+	elif arguments.list_languages:
+		if arguments.script or arguments.stdin or extra:
+			parser.error("extra arguments given with --list-languages")
 		listLanguages()
-
-	elif arguments.language is not None and not arguments.gui:
+	else:
 		if arguments.script:
 			code = arguments.script.read()
 			initialization = ""
@@ -114,6 +118,5 @@ if __name__ == "__main__":
 				initialization = arguments.stdin
 			arguments.script.close()
 			useLanguage(arguments.language, code, initialization, extra)
-
-	else:
-		raise hell # unimplemented
+		else:
+			parser.error("no file to execute specified")
