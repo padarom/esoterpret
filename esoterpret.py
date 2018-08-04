@@ -49,7 +49,7 @@ if __name__ == "__main__":
 	                    help="script file to execute")
 
 	parser.add_argument("--nogui",
-	                    help="compatibility mode (deprecated)",
+	                    help=argparse.SUPPRESS,
 	                    action="store_true")
 
 	parser.add_argument("-s", "--stdin",
