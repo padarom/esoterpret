@@ -1,12 +1,13 @@
+import sys
 from abc import ABCMeta, abstractmethod
-from sys import stdin
 
 class AbstractInterpreter(metaclass=ABCMeta):
 	InstructionPointer = 0
 	Code = None
 
-	def __init__(self, code, defaults = None):
+	def __init__(self, code, stdin):
 		self.Code = code
+		self.stdin = stdin or sys.stdin
 
 	def output(self, text, newline = True):
 		if newline:
@@ -16,9 +17,9 @@ class AbstractInterpreter(metaclass=ABCMeta):
 
 	def input(self, character = False):
 		if character:
-			return stdin.read(1)
+			return self.stdin.read(1)
 		else:
-			return stdin.readline()
+			return self.stdin.readline()
 
 	@abstractmethod
 	def nextInstruction(self): pass

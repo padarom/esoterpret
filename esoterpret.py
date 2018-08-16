@@ -8,7 +8,7 @@ Repository: https://github.com/Padarom/Esoterpret
 
 """
 
-import argparse, os, sys, inspect
+import argparse, os, sys, inspect, io
 
 from esoterpret.language import Language
 from esoterpret.terminal import Color
@@ -25,12 +25,11 @@ def listLanguages():
 			except:
 				pass
 
-def useLanguage(language, code, initialization, extra_args):
+def useLanguage(language, code, stdin, extra_args):
 	try:
 		lang = Language(language)
 		extrakws, extrapos = parseExtra(extra_args, lang, language)
-		interpreter = lang.Class(code, initialization,
-					 *extrapos, **extrakws)
+		interpreter = lang.Class(code, stdin, *extrapos, **extrakws)
 		while not(interpreter.hasExecutionFinished()):
 			interpreter.nextInstruction()
 	except ImportError:
@@ -87,7 +86,9 @@ if __name__ == "__main__":
 	                    action="store_true")
 
 	parser.add_argument("-s", "--stdin",
-	                    help="stdin values")
+	                    help="stdin values",
+			    type=io.StringIO,
+			    default=sys.stdin)
 
 	exclusive = parser.add_mutually_exclusive_group(required=True)
 
@@ -113,10 +114,8 @@ if __name__ == "__main__":
 	else:
 		if arguments.script:
 			code = arguments.script.read()
-			initialization = ""
-			if arguments.stdin:
-				initialization = arguments.stdin
 			arguments.script.close()
-			useLanguage(arguments.language, code, initialization, extra)
+			useLanguage(arguments.language, code,
+			            arguments.stdin, extra)
 		else:
 			parser.error("no file to execute specified")
