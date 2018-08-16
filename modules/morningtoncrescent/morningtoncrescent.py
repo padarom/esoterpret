@@ -23,26 +23,28 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
 	Jumpstack   = []
 	StationValues = {}
 
-	Code = []
 	_verbose = False
 
-	def __init__(self, code, acc, verbose = False):
+	def __init__(self, code, stdin, verbose = False):
 		"""
 		Initialize a new interpreter.
 
 		Arguments:
 			code -- the code to execute as a string
-			acc -- initialization value for accumulator
+			stdin -- file-like object to read initial accumulator from
+			verbose -- whether to print out each step as it is executed
 		"""
+		newcode = []
 		for line in iter(code.splitlines()):
 			pattern = re.compile("^Take (.*) Line to ([^#]*?)[\t ]*(#.*)?$")
 
 			# Add only valid Lines to the code list, ignoring the rest.
 			if pattern.match(line):
-				self.Code.append(line)
+				newcode.append(line)
+		super().__init__(newcode, stdin)
 
 		self._verbose = verbose
-		self.Accumulator = acc
+		self.Accumulator = self.input()
 
 		# Initialize Station Values to their names
 		for station in Stations.keys():
