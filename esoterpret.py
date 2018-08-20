@@ -108,7 +108,7 @@ if __name__ == "__main__":
 	if arguments.gui:
 		parser.error("GUI not currently implemented")
 	elif arguments.list_languages:
-		if arguments.script or arguments.stdin or extra:
+		if arguments.script or arguments.stdin != sys.stdin or extra:
 			parser.error("extra arguments given with --list-languages")
 		listLanguages()
 	else:
