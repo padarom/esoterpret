@@ -2,11 +2,10 @@ import sys
 from abc import ABCMeta, abstractmethod
 
 class AbstractInterpreter(metaclass=ABCMeta):
-    InstructionPointer = 0
-    Code = None
+    instruction_pointer = 0
 
     def __init__(self, code, stdin):
-        self.Code = code
+        self.code = code
         self.stdin = stdin or sys.stdin
 
     def output(self, text, newline = True):
@@ -22,8 +21,8 @@ class AbstractInterpreter(metaclass=ABCMeta):
             return self.stdin.readline()
 
     @abstractmethod
-    def nextInstruction(self): pass
+    def next_instruction(self): pass
 
     @abstractmethod
-    def hasExecutionFinished(self): pass
+    def has_execution_finished(self): pass
 
