@@ -280,6 +280,6 @@ Stations = defaultdict(list)
 Lines    = set()
 
 for match in _matches:
-	for line in re.compile("\[([^\[\]]*)\]").findall(match.group(2)):
-		Stations[match.group(1)].append(line)
-		Lines.add(line)
+    for line in re.compile("\[([^\[\]]*)\]").findall(match.group(2)):
+        Stations[match.group(1)].append(line)
+        Lines.add(line)
