@@ -276,10 +276,10 @@ Woodside Park [Northern]"""
 
 _matches = map(lambda line: re.search("^([^\[\]]*?)\s*((\[[^\[\]]*\]\s*)*)$", line), _StationString.split("\n"))
 
-Stations = defaultdict(list)
-Lines    = set()
+stations = defaultdict(list)
+lines    = set()
 
 for match in _matches:
     for line in re.compile("\[([^\[\]]*)\]").findall(match.group(2)):
-        Stations[match.group(1)].append(line)
-        Lines.add(line)
+        stations[match.group(1)].append(line)
+        lines.add(line)
