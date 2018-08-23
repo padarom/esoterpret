@@ -21,8 +21,9 @@ from esoterpret.terminal import Color
 path = os.path.dirname(os.path.realpath(__file__))
 
 def list_languages():
-    for item in os.listdir(path + "/modules"):
-        if os.path.isdir(path + "/modules/" + item) and item != "__pycache__":
+    modules_dir = os.path.join(path, "modules")
+    for item in os.listdir(modules_dir):
+        if os.path.isdir(os.path.join(modules_dir, item)) and item != "__pycache__":
             try:
                 language = Language(item)
                 print("- %s%s %s(%s)" % (Color.BOLD, language.config["name"], Color.NORMAL, item))
