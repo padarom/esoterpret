@@ -133,7 +133,7 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
         # Debug
         if self._verbose:
             print("[" + str(self.instruction_pointer) + "] " + code)
-            print("Before: %r (%r)" % (self.accumulator, self.station_values[destination])))
+            print("Before: %r (%r)" % (self.accumulator, self.station_values[destination]))
 
         self.execute_station(destination)
 
