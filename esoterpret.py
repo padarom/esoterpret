@@ -33,14 +33,13 @@ def list_languages():
 def use_language(language, code, stdin, extra_args):
     try:
         lang = Language(language)
+    except FileNotFoundError:
+        print("Unknown language: %s" % language)
+    else:
         extrakws, extrapos = parse_extra_args(extra_args, lang, language)
         interpreter = lang.interpreter_class(code, stdin, *extrapos, **extrakws)
         while not(interpreter.has_execution_finished()):
             interpreter.next_instruction()
-    except ImportError:
-        print("No Interpreter found for %s." % language)
-    except FileNotFoundError:
-        print("Config file for %s could not be loaded." % language)
 def parse_extra_args(extra, langc, langname):
     sig = inspect.signature(langc.interpreter_class.__init__)
     Parameter = inspect.Parameter
