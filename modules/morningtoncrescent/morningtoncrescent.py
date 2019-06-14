@@ -249,6 +249,7 @@ class MorningtonCrescentInterpreter(AbstractInterpreter):
             acc = self.accumulator
             if isinstance(self.station_values[station], str):
                 self.accumulator = self.station_values[station][::-1]
+                self.station_values[station] = acc
             else:
                 performDefault = True
 
